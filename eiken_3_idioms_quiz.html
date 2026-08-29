@@ -1,0 +1,6570 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>英検®3級 熟語マスター クイズ＆フラッシュカード V22</title>
+    <style>
+        :root {
+            --primary: #1B365D;      /* アカデミックネイビー */
+            --accent: #D35400;       /* 知的なオレンジ */
+            --accent-light: #FDF2E9; /* 極うすいオレンジ */
+            --bg: #F8FAFC;           /* 爽やかなニュアンスグレー */
+            --white: #FFFFFF;
+            --text-dark: #2C3E50;
+            --text-light: #7F8C8D;
+            --border: #E2E8F0;
+            --success: #27AE60;      /* 正解グリーン */
+            --error: #C0392B;        /* 誤解レッド */
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            -webkit-tap-highlight-color: transparent; /* タップのハイライトを消す */
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans CJK", sans-serif;
+            background-color: var(--bg);
+            color: var(--text-dark);
+            line-height: 1.6;
+            padding: 12px;
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            min-height: 100vh;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 640px;
+            background: var(--white);
+            border-radius: 16px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.05);
+            border: 1px solid var(--border);
+            overflow: hidden;
+            margin-top: 10px;
+            margin-bottom: 30px;
+        }
+
+        /* 画面切り替え用のベース設定 */
+        .screen {
+            display: none;
+            padding: 24px;
+        }
+
+        .screen.active {
+            display: block;
+        }
+
+        /* タイトル・ヘッダー */
+        .header {
+            background-color: var(--primary);
+            color: var(--white);
+            padding: 24px;
+            text-align: center;
+            border-bottom: 4px solid var(--accent);
+            position: relative;
+        }
+
+        .header h1 {
+            font-size: 20px;
+            font-weight: 700;
+            letter-spacing: 0.5px;
+            margin-bottom: 4px;
+        }
+
+        .header p {
+            font-size: 12px;
+            opacity: 0.8;
+        }
+
+        /* スピーカーアイコン */
+        .sound-toggle {
+            position: absolute;
+            right: 16px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .sound-toggle:hover {
+            background: rgba(255, 255, 255, 0.2);
+        }
+
+        /* 進行状況・ダッシュボード */
+        .dashboard-card {
+            background: var(--bg);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 16px;
+            margin-bottom: 24px;
+        }
+
+        .dashboard-title {
+            font-size: 13px;
+            font-weight: 700;
+            color: var(--primary);
+            margin-bottom: 12px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .source-indicator {
+            font-size: 11px;
+            font-weight: normal;
+            background: #E2E8F0;
+            color: #4A5568;
+            padding: 2px 8px;
+            border-radius: 99px;
+        }
+
+        .progress-container {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 8px;
+        }
+
+        .progress-label {
+            font-size: 14px;
+            font-weight: 600;
+        }
+
+        .progress-percentage {
+            font-size: 16px;
+            font-weight: 700;
+            color: var(--accent);
+        }
+
+        .progress-bar-outer {
+            width: 100%;
+            height: 10px;
+            background: #E2E8F0;
+            border-radius: 99px;
+            overflow: hidden;
+            margin-bottom: 16px;
+        }
+
+        .progress-bar-inner {
+            height: 100%;
+            width: 0%;
+            background-color: var(--accent);
+            border-radius: 99px;
+            transition: width 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+        }
+
+        .stat-item {
+            background: var(--white);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 10px;
+            text-align: center;
+        }
+
+        .stat-val {
+            font-size: 18px;
+            font-weight: 700;
+            color: var(--primary);
+        }
+
+        .stat-lbl {
+            font-size: 11px;
+            color: var(--text-light);
+            margin-top: 2px;
+        }
+
+        /* 出題範囲選択 */
+        .section-title {
+            font-size: 15px;
+            font-weight: 700;
+            color: var(--primary);
+            margin-bottom: 12px;
+            border-left: 4px solid var(--accent);
+            padding-left: 8px;
+        }
+
+        .range-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+            margin-bottom: 16px;
+        }
+
+        .range-card {
+            background: var(--white);
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            padding: 14px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            position: relative;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            user-select: none;
+        }
+
+        .range-card:hover {
+            border-color: var(--primary);
+            background-color: #F8FAFC;
+        }
+
+        .range-card.selected {
+            border-color: var(--primary);
+            background-color: #F0F4F8;
+            box-shadow: 0 0 0 2px var(--primary);
+        }
+
+        .range-card input[type="radio"] {
+            cursor: pointer;
+            width: 16px;
+            height: 16px;
+            accent-color: var(--primary);
+        }
+
+        .range-info h3 {
+            font-size: 13px;
+            font-weight: 700;
+        }
+
+        .range-info p {
+            font-size: 10px;
+            color: var(--text-light);
+        }
+
+        /* 自由指定の入力欄 */
+        .custom-range-container {
+            grid-column: span 2;
+            background: var(--white);
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            padding: 14px;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            cursor: pointer;
+        }
+
+        .custom-range-inputs {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-top: 4px;
+        }
+
+        .custom-range-inputs input {
+            width: 70px;
+            padding: 6px;
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            text-align: center;
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--primary);
+        }
+
+        .custom-range-inputs span {
+            font-size: 14px;
+            color: var(--text-light);
+        }
+
+        /* ボタン関係 */
+        .btn {
+            display: block;
+            width: 100%;
+            padding: 15px;
+            border: none;
+            border-radius: 10px;
+            font-size: 15px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            text-align: center;
+            margin-bottom: 12px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+            text-decoration: none;
+            user-select: none;
+        }
+
+        .btn-primary {
+            background-color: var(--primary);
+            color: var(--white);
+        }
+
+        .btn-primary:hover {
+            background-color: #24487C;
+            transform: translateY(-1px);
+        }
+
+        .btn-accent {
+            background-color: var(--accent);
+            color: var(--white);
+        }
+
+        .btn-accent:hover:not(:disabled) {
+            background-color: #E67E22;
+            transform: translateY(-1px);
+        }
+
+        .btn-accent:disabled {
+            background-color: #BDC3C7;
+            cursor: not-allowed;
+            opacity: 0.6;
+            box-shadow: none;
+        }
+
+        .btn-light {
+            background-color: var(--white);
+            color: var(--text-dark);
+            border: 1px solid var(--border);
+            box-shadow: none;
+        }
+
+        .btn-light:hover {
+            background-color: var(--bg);
+        }
+
+        /* クイズ出題画面 */
+        .quiz-status-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 13px;
+            color: var(--text-light);
+            margin-bottom: 20px;
+            border-bottom: 1px solid var(--border);
+            padding-bottom: 10px;
+        }
+
+        .quiz-card {
+            background: var(--white);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 24px;
+            margin-bottom: 24px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.02);
+        }
+
+        .q-number {
+            font-size: 11px;
+            font-weight: 700;
+            color: var(--accent);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 8px;
+        }
+
+        .q-english {
+            font-size: 20px;
+            font-weight: 700;
+            color: var(--primary);
+            margin-bottom: 16px;
+            word-wrap: break-word;
+        }
+
+        .q-english .blank {
+            color: var(--accent);
+            font-weight: 800;
+            display: inline-block;
+            background: #FDEDEC;
+            border-bottom: 3px solid var(--accent);
+            padding: 2px 15px;
+            border-radius: 4px;
+            margin: 0 8px;
+            font-family: monospace, Courier, sans-serif;
+            letter-spacing: 3px;
+            min-width: 80px;
+            text-align: center;
+        }
+
+        .q-japanese {
+            font-size: 15px;
+            color: #34495E;
+            background: #F4F6F7;
+            padding: 12px;
+            border-radius: 8px;
+            border-left: 4px solid #BDC3C7;
+        }
+
+        .q-japanese u {
+            text-decoration: none;
+            border-bottom: 2.5px solid var(--accent);
+            padding-bottom: 1px;
+            font-weight: 700;
+            color: #111;
+        }
+
+        /* 選択肢ボタン */
+        .choices-container {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            margin-bottom: 24px;
+        }
+
+        .choice-btn {
+            background: var(--white);
+            border: 1.5px solid var(--border);
+            border-radius: 10px;
+            padding: 16px;
+            font-size: 16px;
+            font-weight: 700;
+            color: var(--text-dark);
+            cursor: pointer;
+            text-align: left;
+            transition: all 0.2s ease;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            user-select: none;
+        }
+
+        .choice-btn:hover:not(.disabled) {
+            border-color: var(--primary);
+            background-color: var(--accent-light);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.03);
+        }
+
+        .choice-btn.correct {
+            border-color: var(--success);
+            background-color: #E8F8F5;
+            color: var(--success);
+            box-shadow: 0 4px 10px rgba(39, 174, 96, 0.1);
+        }
+
+        .choice-btn.incorrect {
+            border-color: var(--error);
+            background-color: #FDEDEC;
+            color: var(--error);
+            box-shadow: 0 4px 10px rgba(192, 57, 43, 0.1);
+        }
+
+        .choice-btn.disabled {
+            cursor: not-allowed;
+        }
+
+        /* 解説カード */
+        .explanation-card {
+            background: var(--white);
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 24px;
+            display: none;
+            animation: slideUp 0.3s ease-out;
+            position: relative;
+        }
+
+        .explanation-card.correct-border {
+            border: 2px solid var(--success);
+            background: #F4FBF7;
+        }
+
+        .explanation-card.incorrect-border {
+            border: 2px solid var(--error);
+            background: #FDF5F5;
+        }
+
+        .result-stamp {
+            font-size: 16px;
+            font-weight: 800;
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .correct-text { color: var(--success); }
+        .incorrect-text { color: var(--error); }
+
+        .exp-item {
+            margin-bottom: 10px;
+        }
+
+        .exp-label {
+            font-size: 11px;
+            font-weight: 700;
+            color: var(--text-light);
+            text-transform: uppercase;
+        }
+
+        .exp-val {
+            font-size: 15px;
+            color: var(--text-dark);
+        }
+
+        .exp-sentence {
+            font-size: 16px;
+            font-weight: 700;
+            background: var(--white);
+            padding: 10px;
+            border-radius: 6px;
+            border: 1px dashed var(--border);
+            margin-top: 4px;
+        }
+
+        /* 結果発表画面 */
+        .result-title {
+            text-align: center;
+            font-size: 22px;
+            font-weight: 800;
+            color: var(--primary);
+            margin-bottom: 20px;
+        }
+
+        .rank-badge-container {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 20px;
+        }
+
+        .rank-badge {
+            font-size: 56px;
+            font-weight: 900;
+            color: var(--accent);
+            background: var(--accent-light);
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            border: 4px solid var(--accent);
+            box-shadow: 0 8px 16px rgba(211, 84, 0, 0.15);
+            animation: pop 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        .score-display {
+            text-align: center;
+            font-size: 18px;
+            font-weight: 700;
+            margin-bottom: 20px;
+        }
+
+        .score-display span {
+            color: var(--accent);
+            font-size: 24px;
+        }
+
+        .result-comment {
+            background: var(--bg);
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            padding: 16px;
+            font-size: 14px;
+            color: #4A5568;
+            margin-bottom: 24px;
+        }
+
+        @keyframes slideUp {
+            from { transform: translateY(15px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+
+        @keyframes pop {
+            from { transform: scale(0.6); opacity: 0; }
+            to { transform: scale(1); opacity: 1; }
+        }
+
+        /* PC等でのホバー・アニメーション微調整 */
+        @media(min-width: 480px) {
+            body { padding: 24px; }
+            .container { border-radius: 20px; }
+        }
+
+        /* V6/V7 Flashcard Modes styling */
+        .flashcard-container {
+            perspective: 1000px;
+            width: 100%;
+            height: 320px;
+            margin-bottom: 24px;
+            cursor: pointer;
+            position: relative;
+        }
+        
+        .flashcard {
+            width: 100%;
+            height: 100%;
+            position: absolute;
+            transform-style: preserve-3d;
+            transition: transform 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+            border-radius: 16px;
+        }
+        
+        .flashcard.flipped {
+            transform: rotateY(180deg);
+        }
+        
+        .flashcard-face {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            backface-visibility: hidden;
+            border-radius: 16px;
+            padding: 24px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            border: 2px solid var(--border);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.04);
+            user-select: none;
+        }
+        
+        .flashcard-front {
+            background-color: var(--white);
+            color: var(--text-dark);
+            border-color: var(--border);
+        }
+        
+        .flashcard-back {
+            background-color: #F4FBF7;
+            color: var(--text-dark);
+            transform: rotateY(180deg);
+            border-color: var(--success);
+        }
+        
+        .fc-number {
+            font-size: 11px;
+            font-weight: 700;
+            color: var(--text-light);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 12px;
+            position: absolute;
+            top: 16px;
+        }
+        
+        .fc-hint-tap {
+            font-size: 11px;
+            color: var(--text-light);
+            position: absolute;
+            bottom: 16px;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+        
+        .fc-main-text {
+            font-size: 26px;
+            font-weight: 800;
+            color: var(--primary);
+            margin-bottom: 16px;
+            word-break: break-all;
+        }
+        
+        .fc-sub-text {
+            font-size: 16px;
+            color: #34495E;
+            background: #F4F6F7;
+            padding: 10px 16px;
+            border-radius: 8px;
+            max-width: 100%;
+            word-wrap: break-word;
+        }
+        
+        .fc-sub-text u {
+            text-decoration: none;
+            border-bottom: 2px solid var(--accent);
+            padding-bottom: 1px;
+            font-weight: bold;
+        }
+        
+        /* Hint for J to E card */
+        .fc-char-hint {
+            font-size: 18px;
+            font-weight: 700;
+            letter-spacing: 2px;
+            color: var(--accent);
+            background: var(--accent-light);
+            padding: 6px 12px;
+            border-radius: 6px;
+            margin-top: 12px;
+            font-family: monospace;
+        }
+        
+        /* Action buttons under flipped card */
+        .flashcard-actions {
+            display: flex;
+            gap: 16px;
+            margin-bottom: 20px;
+            animation: fadeIn 0.3s ease;
+        }
+        
+        .fc-action-btn {
+            flex: 1;
+            padding: 15px;
+            border: none;
+            border-radius: 12px;
+            font-size: 15px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 8px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+            user-select: none;
+        }
+        
+        .fc-btn-wrong {
+            background-color: #FDEDEC;
+            color: var(--error);
+            border: 1px solid #F5B7B1;
+        }
+        
+        .fc-btn-wrong:hover {
+            background-color: #FADBD8;
+        }
+        
+        .fc-btn-correct {
+            background-color: var(--success);
+            color: var(--white);
+        }
+        
+        .fc-btn-correct:hover {
+            background-color: #219653;
+        }
+        
+        /* Review Pop-up Modal */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0,0,0,0.5);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            padding: 16px;
+        }
+        
+        .modal-content {
+            background: var(--white);
+            border-radius: 16px;
+            max-width: 400px;
+            width: 100%;
+            padding: 24px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+            animation: pop 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+        
+        .modal-title {
+            font-size: 17px;
+            font-weight: 700;
+            color: var(--primary);
+            margin-bottom: 16px;
+            text-align: center;
+        }
+        
+        .modal-grid {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+        
+        .mode-select-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 12px;
+            margin-bottom: 24px;
+        }
+        
+        .mode-btn {
+            background: var(--white);
+            border: 1.5px solid var(--border);
+            border-radius: 10px;
+            padding: 14px;
+            font-size: 14px;
+            font-weight: 700;
+            color: var(--text-dark);
+            cursor: pointer;
+            transition: all 0.2s ease;
+            text-align: left;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .mode-btn:hover {
+            border-color: var(--primary);
+            background-color: var(--bg);
+        }
+        
+        .mode-btn .icon {
+            font-size: 18px;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <!-- ヘッダー -->
+    <div class="header">
+        <h1 id="title-text">英検®3級 熟語マスター Webクイズ V22</h1>
+        <p>重要表現 Aクラス (901～1100)</p>
+        <div class="sound-toggle" onclick="toggleSound()" title="効果音切り替え">
+            <span id="sound-icon">🔊</span>
+        </div>
+    </div>
+
+    <!-- 1. TOP画面 -->
+    <div id="screen-top" class="screen active">
+        <div class="dashboard-card">
+            <div class="dashboard-title">
+                <span>学習状況ダッシュボード</span>
+                <span id="source-indicator" class="source-indicator">データ読込中...</span>
+            </div>
+            <div class="progress-container">
+                <span class="progress-label">総熟語クリア率</span>
+                <span id="clear-percentage" class="progress-percentage">0%</span>
+            </div>
+            <div class="progress-bar-outer">
+                <div id="progress-bar" class="progress-bar-inner"></div>
+            </div>
+            <div class="stats-grid">
+                <div class="stat-item">
+                    <div id="stat-correct-count" class="stat-val">0</div>
+                    <div class="stat-lbl">クリア済熟語 (全200)</div>
+                </div>
+                <div class="stat-item">
+                    <div id="stat-review-count" class="stat-val">0</div>
+                    <div class="stat-lbl">現在要復習 (過去3日間)</div>
+                </div>
+            </div>
+        </div>
+
+        <h2 class="section-title">出題範囲を設定する</h2>
+        <div class="range-grid">
+            <div class="range-card selected" onclick="selectRange('all', this)">
+                <input type="radio" name="range" value="all" id="radio-all" checked>
+                <div class="range-info">
+                    <h3>すべて (全300問)</h3>
+                    <p>No.901 〜 1200</p>
+                </div>
+            </div>
+            <div class="range-card" onclick="selectRange('level-a', this)">
+                <input type="radio" name="range" value="level-a" id="radio-level-a">
+                <div class="range-info">
+                    <h3>レベルA すべて (200問)</h3>
+                    <p>No.901 〜 1100</p>
+                </div>
+            </div>
+            <div class="range-card" onclick="selectRange('level-b', this)">
+                <input type="radio" name="range" value="level-b" id="radio-level-b">
+                <div class="range-info">
+                    <h3>レベルB すべて (100問)</h3>
+                    <p>No.1101 〜 1200</p>
+                </div>
+            </div>
+            
+            <!-- レベルA 細分化 (クイック①〜④) -->
+            <div class="range-card" onclick="selectRange('901-950', this)">
+                <input type="radio" name="range" value="901-950" id="radio-901">
+                <div class="range-info">
+                    <h3>レベルA クイック①</h3>
+                    <p>No.901 〜 950 (50問)</p>
+                </div>
+            </div>
+            <div class="range-card" onclick="selectRange('951-1000', this)">
+                <input type="radio" name="range" value="951-1000" id="radio-951">
+                <div class="range-info">
+                    <h3>レベルA クイック②</h3>
+                    <p>No.951 〜 1000 (50問)</p>
+                </div>
+            </div>
+            <div class="range-card" onclick="selectRange('1001-1050', this)">
+                <input type="radio" name="range" value="1001-1050" id="radio-1001">
+                <div class="range-info">
+                    <h3>レベルA クイック③</h3>
+                    <p>No.1001 〜 1050 (50問)</p>
+                </div>
+            </div>
+            <div class="range-card" onclick="selectRange('1051-1100', this)">
+                <input type="radio" name="range" value="1051-1100" id="radio-1051">
+                <div class="range-info">
+                    <h3>レベルA クイック④</h3>
+                    <p>No.1051 〜 1100 (50問)</p>
+                </div>
+            </div>
+
+            <!-- レベルB 細分化 (クイック①〜②) -->
+            <div class="range-card" onclick="selectRange('1101-1150', this)">
+                <input type="radio" name="range" value="1101-1150" id="radio-1101">
+                <div class="range-info">
+                    <h3>レベルB クイック①</h3>
+                    <p>No.1101 〜 1150 (50問)</p>
+                </div>
+            </div>
+            <div class="range-card" onclick="selectRange('1151-1200', this)">
+                <input type="radio" name="range" value="1151-1200" id="radio-1151">
+                <div class="range-info">
+                    <h3>レベルB クイック②</h3>
+                    <p>No.1151 〜 1200 (50問)</p>
+                </div>
+            </div>
+            
+            <!-- カスタム範囲指定 -->
+            <div class="custom-range-container" onclick="selectRange('custom', this)">
+                <div style="display: flex; gap: 8px; align-items: center;">
+                    <input type="radio" name="range" value="custom" id="radio-custom">
+                    <h3 style="font-size: 13px; font-weight: 700;">番号を自由に指定する</h3>
+                </div>
+                <div class="custom-range-inputs">
+                    <input type="number" id="custom-start" min="901" max="1200" value="901" onchange="updateCustomRange()" onclick="event.stopPropagation()">
+                    <span>〜</span>
+                    <input type="number" id="custom-end" min="901" max="1200" value="1200" onchange="updateCustomRange()" onclick="event.stopPropagation()">
+                </div>
+            </div>
+        </div>
+
+        <h2 class="section-title">学習モードを選択する</h2>
+        <div class="mode-select-grid">
+            <button class="mode-btn" onclick="startStudy('quiz')">
+                <span class="icon">⚡</span>
+                <div class="range-info">
+                    <h3>3択穴埋めクイズを解く</h3>
+                    <p>時制に合わせた変化形を見極めて穴埋め</p>
+                </div>
+            </button>
+            <button class="mode-btn" onclick="startStudy('card-ej')">
+                <span class="icon">🎴</span>
+                <div class="range-info">
+                    <h3>フラッシュカード【英 ➡ 日】</h3>
+                    <p>英単語・例文を見て意味を覚える (高速暗記)</p>
+                </div>
+            </button>
+            <button class="mode-btn" onclick="startStudy('card-je')">
+                <span class="icon">✍️</span>
+                <div class="range-info">
+                    <h3>フラッシュカード【日 ➡ 英】</h3>
+                    <p>和訳と単語数から英熟語を答える</p>
+                </div>
+            </button>
+        </div>
+        <button id="btn-review" class="btn btn-accent" onclick="openReviewModal()" disabled>🔄 過去3日間の間違いを復習する (現在0問)</button>
+        <div id="sound-status" style="text-align: center; font-size: 11px; color: var(--text-light);">効果音: オン</div>
+    </div>
+
+    <!-- 🎴 フラッシュカード画面 -->
+    <div id="screen-card" class="screen">
+        <div class="quiz-status-bar">
+            <span id="card-progress-text">カード 1 / 20</span>
+            <span id="card-remaining-text">残り 19枚</span>
+        </div>
+
+        <div class="flashcard-container" onclick="flipCard()">
+            <div id="flashcard" class="flashcard">
+                <!-- 表面 -->
+                <div class="flashcard-face flashcard-front">
+                    <div id="fc-front-num" class="fc-number">No.901</div>
+                    <div id="fc-front-main" class="fc-main-text">want to (原)</div>
+                    <div id="fc-front-sub" class="fc-sub-text">The girl wanted to get a new bike.</div>
+                    <div id="fc-front-hint" class="fc-char-hint" style="display: none;">w_____ t_</div>
+                    <div class="fc-hint-tap">👆 画面タップでめくる</div>
+                </div>
+                <!-- 裏面 -->
+                <div class="flashcard-face flashcard-back">
+                    <div id="fc-back-num" class="fc-number">No.901</div>
+                    <div id="fc-back-main" class="fc-main-text" style="color: var(--success);">〜したいと思う</div>
+                    <div id="fc-back-sub" class="fc-sub-text">その女の子は新しい自転車をほしがった。</div>
+                    <div class="fc-hint-tap">👆 表面に戻る</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 判定・仕分けボタン (裏返った後にフェードイン表示) -->
+        <div id="fc-actions" class="flashcard-actions" style="display: none;">
+            <button class="fc-action-btn fc-btn-wrong" onclick="handleCardScore(false)">
+                ❌ まだ未完成 (もう一回)
+            </button>
+            <button class="fc-action-btn fc-btn-correct" onclick="handleCardScore(true)">
+                ⭕ 覚えた！ (デッキから除外)
+            </button>
+        </div>
+
+        <button class="btn btn-light" onclick="confirmQuit()" style="margin-top: 10px;">🏠 学習を中断してTOPへ戻る</button>
+    </div>
+
+    <!-- 🚪 復習モード選択モーダル -->
+    <div id="review-modal" class="modal-overlay" onclick="closeReviewModal()">
+        <div class="modal-content" onclick="event.stopPropagation()">
+            <div id="modal-review-title" class="modal-title">復習モードを選択してください</div>
+            <div class="modal-grid">
+                <button class="btn btn-primary" style="margin-bottom:0;" onclick="startQuiz(true); closeReviewModal();">⚡ 復習クイズを解く (3択)</button>
+                <button class="btn btn-accent" style="margin-bottom:0; background-color: var(--success);" onclick="startStudy('card-ej', true); closeReviewModal();">🎴 復習カード【英 ➡ 日】</button>
+                <button class="btn btn-accent" style="margin-bottom:0;" onclick="startStudy('card-je', true); closeReviewModal();">✍️ 復習カード【日 ➡ 英】</button>
+                <button class="btn btn-light" style="margin-bottom:0;" onclick="closeReviewModal()">キャンセル</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 2. クイズ出題画面 -->
+    <div id="screen-quiz" class="screen">
+        <div class="quiz-status-bar">
+            <span id="quiz-progress-text">問題 1 / 20</span>
+            <span id="quiz-accuracy">正解率 100%</span>
+        </div>
+
+        <div class="quiz-card">
+            <div id="q-id" class="q-number">No.901</div>
+            <div id="q-eng" class="q-english">The girl <span class="blank">?</span> get a new bike.</div>
+            <div id="q-jp" class="q-japanese">その女の子は新しい自転車を <u>ほしがった</u>。</div>
+        </div>
+
+        <div class="choices-container">
+            <button id="choice-0" class="choice-btn" onclick="selectChoice(0)">
+                <span class="text">Choice A</span>
+                <span class="icon"></span>
+            </button>
+            <button id="choice-1" class="choice-btn" onclick="selectChoice(1)">
+                <span class="text">Choice B</span>
+                <span class="icon"></span>
+            </button>
+            <button id="choice-2" class="choice-btn" onclick="selectChoice(2)">
+                <span class="text">Choice C</span>
+                <span class="icon"></span>
+            </button>
+        </div>
+
+        <!-- 判定・解説カード -->
+        <div id="explanation-card" class="explanation-card">
+            <div id="feedback-stamp" class="result-stamp">⭕ 正解！</div>
+            <div class="exp-item">
+                <div class="exp-label">完成文 (Sentence)</div>
+                <div id="exp-sentence" class="exp-sentence">The girl wanted to get a new bike.</div>
+            </div>
+            <div class="exp-item" style="margin-top: 12px; display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+                <div>
+                    <div class="exp-label">重要熟語</div>
+                    <div id="exp-idiom" class="exp-val" style="font-weight: 700; color: var(--accent);">want to</div>
+                </div>
+                <div>
+                    <div class="exp-label">本来の意味</div>
+                    <div id="exp-meaning" class="exp-val" style="font-weight: 700; color: var(--primary);">〜したい</div>
+                </div>
+            </div>
+            <button class="btn btn-primary" onclick="nextQuestion()" style="margin-top: 18px; margin-bottom: 0;">次の問題へ ➡</button>
+        </div>
+
+        <button class="btn btn-light" onclick="confirmQuit()" style="margin-top: 10px;">🏠 クイズを中断してTOPへ戻る</button>
+    </div>
+
+    <!-- 3. 結果発表画面 -->
+    <div id="screen-result" class="screen">
+        <h2 class="result-title">クイズ結果発表！</h2>
+        <div class="rank-badge-container">
+            <div id="r-rank" class="rank-badge">S</div>
+        </div>
+        <div id="r-percentage" class="score-display">正解率: <span>0%</span></div>
+        <p style="text-align: center; font-size: 13px; color: var(--text-light); margin-bottom: 20px;">
+            全 <span id="r-total">0</span> 問中、<span id="r-correct">0</span> 問正解でした！
+        </p>
+        <div id="r-comment" class="result-comment">
+            素晴らしい成果です！
+        </div>
+
+        <button class="btn btn-primary" onclick="showTopScreen()">🏠 TOP画面に戻る</button>
+    </div>
+</div>
+
+<script>
+
+    // -----------------------------------------------------------------
+    // ローカルファイル制限（SecurityError）を完璧に回避する安全なストレージ
+    // -----------------------------------------------------------------
+    const safeStorage = {
+        fallback: {},
+        getItem: function(key) {
+            try {
+                return localStorage.getItem(key);
+            } catch (e) {
+                console.warn("localStorage.getItem blocked, using in-memory backup.", e);
+                return this.fallback[key] || null;
+            }
+        },
+        setItem: function(key, value) {
+            try {
+                localStorage.setItem(key, value);
+            } catch (e) {
+                console.warn("localStorage.setItem blocked, using in-memory backup.", e);
+                this.fallback[key] = value;
+            }
+        }
+    };
+
+    // クイズの全データベース (Pythonから動的またはバックアップデータが埋め込まれます)
+    const quizDatabase = {
+  "901": {
+    "id": 901,
+    "idiom": "want to (原)",
+    "meaning": "②  (原) したいと思う",
+    "sentence": "The girl wanted to get a new bike.",
+    "eng_target": "wanted to",
+    "choices": [
+      "wanted to",
+      "wanted for",
+      "wanted at"
+    ],
+    "translation": "その女の子は新しい自転車をほしがった。",
+    "jp_target": "ほしがった",
+    "word_count": 2
+  },
+  "902": {
+    "id": 902,
+    "idiom": "like to  (原)",
+    "meaning": "②  (原) するのが好きである",
+    "sentence": "She likes to go shopping with her friends.",
+    "eng_target": "likes to",
+    "choices": [
+      "likes to",
+      "likes for",
+      "likes at"
+    ],
+    "translation": "彼女は友達と一緒に買い物に行くのが好きだ。",
+    "jp_target": "のが好きだ",
+    "word_count": 2
+  },
+  "903": {
+    "id": 903,
+    "idiom": "have to  (原)",
+    "meaning": "②  (原) しなければならない",
+    "sentence": "I have to finish this report by next Monday.",
+    "eng_target": "have to",
+    "choices": [
+      "have to",
+      "have for",
+      "have at"
+    ],
+    "translation": "今度の月曜までにこのレポートを終わらせなければならない。",
+    "jp_target": "なければならない",
+    "word_count": 2
+  },
+  "904": {
+    "id": 904,
+    "idiom": "like  ～ing",
+    "meaning": "② ～するのが好きである",
+    "sentence": "Those boys like playing basketball very much.",
+    "eng_target": "like playing",
+    "choices": [
+      "like playing",
+      "like to play",
+      "like play"
+    ],
+    "translation": "あれらの少年たちはバスケをするのがとても好きだ。",
+    "jp_target": "するのが好き",
+    "word_count": 1
+  },
+  "905": {
+    "id": 905,
+    "idiom": "enjoy  ～  ing",
+    "meaning": "② ～するのを楽しむ",
+    "sentence": "They enjoyed watching a volleyball game on TV.",
+    "eng_target": "enjoyed watching",
+    "choices": [
+      "enjoyed watching",
+      "enjoyed to watch",
+      "enjoyed watch"
+    ],
+    "translation": "彼らはテレビでバレーの試合を見るのを楽しんだ。",
+    "jp_target": "るのを楽し",
+    "word_count": 2
+  },
+  "906": {
+    "id": 906,
+    "idiom": "look forward to  ～ing",
+    "meaning": "④ (～する)のを楽しみにして待つ",
+    "sentence": "I am looking forward to seeing you again.",
+    "eng_target": "looking forward to",
+    "choices": [
+      "looking forward to",
+      "looking forward for",
+      "looking forward at"
+    ],
+    "translation": "あなたにまた会うことを楽しみにしています。",
+    "jp_target": "楽しみにしています",
+    "word_count": 3
+  },
+  "907": {
+    "id": 907,
+    "idiom": "need to  (原)",
+    "meaning": "②  (原) する必要がある",
+    "sentence": "We need to find someone who can speak French.",
+    "eng_target": "need to",
+    "choices": [
+      "need to",
+      "need for",
+      "need at"
+    ],
+    "translation": "誰かフランス語を話せる人を見つける必要がある。",
+    "jp_target": "する必要がある",
+    "word_count": 2
+  },
+  "908": {
+    "id": 908,
+    "idiom": "take  A  to  B",
+    "meaning": "②  A を B に連れていく、 A を B に持っていく",
+    "sentence": "Dad took me to the baseball game.",
+    "eng_target": "took me to",
+    "choices": [
+      "took me to",
+      "took me for",
+      "took me at"
+    ],
+    "translation": "父は僕をその野球の試合に連れて行った。",
+    "jp_target": "に連れて行った",
+    "word_count": 2
+  },
+  "909": {
+    "id": 909,
+    "idiom": "how long ～",
+    "meaning": "② どれくらいの時間～",
+    "sentence": "How long is the show?",
+    "eng_target": "How long",
+    "choices": [
+      "How long",
+      "How far",
+      "How many"
+    ],
+    "translation": "そのショーはどれくらいの時間ですか？",
+    "jp_target": "どれくらいの時間",
+    "word_count": 2
+  },
+  "910": {
+    "id": 910,
+    "idiom": "want  人  to  (原)",
+    "meaning": "②  人 に (原) してほしいと思う",
+    "sentence": "My father wants me to become a (原)ctor.",
+    "eng_target": "wants me to",
+    "choices": [
+      "wants me to",
+      "wants me for",
+      "wants me of"
+    ],
+    "translation": "父は私に医者になってほしいと思っている。",
+    "jp_target": "になってほしい",
+    "word_count": 2
+  },
+  "911": {
+    "id": 911,
+    "idiom": "*be*  good at  ～ing",
+    "meaning": "④ ～するのが上手である",
+    "sentence": "My uncle is good at playing soccer.",
+    "eng_target": "is good at",
+    "choices": [
+      "is good at",
+      "is good for",
+      "is good in"
+    ],
+    "translation": "私のおじはサッカーをするのがうまい。",
+    "jp_target": "るのがうまい",
+    "word_count": 3
+  },
+  "912": {
+    "id": 912,
+    "idiom": "go out for ～",
+    "meaning": "③ ～にでかける",
+    "sentence": "Why don’t we go out for lunch?",
+    "eng_target": "go out for",
+    "choices": [
+      "go out for",
+      "go out to",
+      "go out at"
+    ],
+    "translation": "ランチを食べに行こうよ。",
+    "jp_target": "ランチを食べに行こうよ",
+    "word_count": 3
+  },
+  "913": {
+    "id": 913,
+    "idiom": "start  *~*  ing",
+    "meaning": "② ～し始める",
+    "sentence": "She started learning English when she was 10.",
+    "eng_target": "started learning",
+    "choices": [
+      "started learning",
+      "started to learning",
+      "started learn"
+    ],
+    "translation": "彼女は10歳の時に英語を学び始めた。",
+    "jp_target": "学び始めた",
+    "word_count": 2
+  },
+  "914": {
+    "id": 914,
+    "idiom": "after school",
+    "meaning": "② 放課後に",
+    "sentence": "I always go straight home after school.",
+    "eng_target": "after school",
+    "choices": [
+      "after school",
+      "before school",
+      "behind school"
+    ],
+    "translation": "僕は放課後いつもまっすぐ家に帰る。",
+    "jp_target": "放課後",
+    "word_count": 2
+  },
+  "915": {
+    "id": 915,
+    "idiom": "go and  (原)",
+    "meaning": "② (原)しに行く",
+    "sentence": "Could you go and get some eggs?",
+    "eng_target": "go and get",
+    "choices": [
+      "go and get",
+      "go to get",
+      "go for get"
+    ],
+    "translation": "卵を買ってきてくれない？",
+    "jp_target": "買ってきてくれない",
+    "word_count": 2
+  },
+  "916": {
+    "id": 916,
+    "idiom": "grow up (in ～)",
+    "meaning": "② ～で成長する、～で大人になる",
+    "sentence": "Keiko grew up in Australia.",
+    "eng_target": "grew up in",
+    "choices": [
+      "grew up in",
+      "grew up at",
+      "grew up on"
+    ],
+    "translation": "ケイコはオーストラリアで成長しました。",
+    "jp_target": "成長しました",
+    "word_count": 3
+  },
+  "917": {
+    "id": 917,
+    "idiom": "this morning",
+    "meaning": "② 今朝",
+    "sentence": "I studied math this morning",
+    "eng_target": "this morning",
+    "choices": [
+      "this morning",
+      "that morning",
+      "this tomorrow"
+    ],
+    "translation": "今朝は数学を勉強したよ。",
+    "jp_target": "今朝",
+    "word_count": 2
+  },
+  "918": {
+    "id": 918,
+    "idiom": "*be*  popular with  A",
+    "meaning": "③  A に人気がある",
+    "sentence": "Chi-kawa is popular with many people.",
+    "eng_target": "is popular with",
+    "choices": [
+      "is popular with",
+      "is popular for",
+      "is popular at"
+    ],
+    "translation": "ちーかわは多くの人に人気がある。",
+    "jp_target": "人気がある",
+    "word_count": 3
+  },
+  "919": {
+    "id": 919,
+    "idiom": "a lot of ～",
+    "meaning": "③ たくさんの～",
+    "sentence": "I have a lot of things to do today.",
+    "eng_target": "a lot of",
+    "choices": [
+      "a lot of",
+      "a lot to",
+      "a lot for"
+    ],
+    "translation": "今日はやらなきゃいけないことがたくさんある。",
+    "jp_target": "たくさん",
+    "word_count": 3
+  },
+  "920": {
+    "id": 920,
+    "idiom": "*be*  able to  (原)",
+    "meaning": "③ (原)することができる",
+    "sentence": "This robot is able to walk.",
+    "eng_target": "is able to",
+    "choices": [
+      "is able to",
+      "is able for",
+      "is able at"
+    ],
+    "translation": "このロボットは歩くことができる。",
+    "jp_target": "ことができる",
+    "word_count": 3
+  },
+  "921": {
+    "id": 921,
+    "idiom": "from  A  to  B",
+    "meaning": "③  A から B まで",
+    "sentence": "The cafe is open from 8 a.m. to 9 p.m..",
+    "eng_target": "from 8 a.m. to",
+    "choices": [
+      "from 8 a.m. to",
+      "from 8 a.m. for",
+      "from 8 a.m. at"
+    ],
+    "translation": "そのカフェは朝8時から夜9時まで開いてるよ。",
+    "jp_target": "から",
+    "word_count": 2
+  },
+  "922": {
+    "id": 922,
+    "idiom": "a little",
+    "meaning": "② 少し",
+    "sentence": "It is a little cold this morning.",
+    "eng_target": "a little",
+    "choices": [
+      "a little",
+      "a few",
+      "a lot"
+    ],
+    "translation": "今朝は少し寒いです。",
+    "jp_target": "少し",
+    "word_count": 2
+  },
+  "923": {
+    "id": 923,
+    "idiom": "*be*  late for ～",
+    "meaning": "③ ～に遅刻する",
+    "sentence": "I was late for school because of a bus accident.",
+    "eng_target": "was late for",
+    "choices": [
+      "was late for",
+      "was late to",
+      "was late at"
+    ],
+    "translation": "バスの事故のせいで学校に遅れた。",
+    "jp_target": "遅れた",
+    "word_count": 3
+  },
+  "924": {
+    "id": 924,
+    "idiom": "how to  (原)",
+    "meaning": "② どうやって (原) するか、 (原) の仕方",
+    "sentence": "I don’t know how to make takoyaki.",
+    "eng_target": "how to",
+    "choices": [
+      "how to",
+      "how do",
+      "how for"
+    ],
+    "translation": "タコ焼きをどうやって作るかわからない。",
+    "jp_target": "どうやって作るか",
+    "word_count": 2
+  },
+  "925": {
+    "id": 925,
+    "idiom": "look for ～",
+    "meaning": "② ～を探す",
+    "sentence": "I am looking for my phone.",
+    "eng_target": "looking for",
+    "choices": [
+      "looking for",
+      "looking to",
+      "looking at"
+    ],
+    "translation": "電話を探しています。",
+    "jp_target": "探しています",
+    "word_count": 2
+  },
+  "926": {
+    "id": 926,
+    "idiom": "a few ～",
+    "meaning": "② 2,3 of ～、少数の～",
+    "sentence": "Please wait for a few minutes.",
+    "eng_target": "a few",
+    "choices": [
+      "a few",
+      "a little",
+      "a lot"
+    ],
+    "translation": "2,3分待ってください。",
+    "jp_target": "2,3分",
+    "word_count": 2
+  },
+  "927": {
+    "id": 927,
+    "idiom": "ask  A  to  (原)",
+    "meaning": "②  A に (原) するように頼む",
+    "sentence": "I asked Tod to call  Sachi later.",
+    "eng_target": "asked Tod to",
+    "choices": [
+      "asked Tod to",
+      "asked Tod for",
+      "asked Tod of"
+    ],
+    "translation": "トッドに、後でサチに電話をするように頼んだ。",
+    "jp_target": "頼んだ",
+    "word_count": 2
+  },
+  "928": {
+    "id": 928,
+    "idiom": "*be*  ready for ～",
+    "meaning": "③ ～の準備ができている",
+    "sentence": "He is ready for the test tomorrow.",
+    "eng_target": "is ready for",
+    "choices": [
+      "is ready for",
+      "is ready to",
+      "is ready at"
+    ],
+    "translation": "彼は明日のテストの準備ができている。",
+    "jp_target": "準備ができている",
+    "word_count": 3
+  },
+  "929": {
+    "id": 929,
+    "idiom": "move to ～",
+    "meaning": "② ～に引っ越す",
+    "sentence": "I moved to this town 3 months ago.",
+    "eng_target": "moved to",
+    "choices": [
+      "moved to",
+      "moved for",
+      "moved at"
+    ],
+    "translation": "3か月前にこの町に引っ越してきました。",
+    "jp_target": "引っ越してきました",
+    "word_count": 2
+  },
+  "930": {
+    "id": 930,
+    "idiom": "decide to  (原)",
+    "meaning": "③  (原) することに決める",
+    "sentence": "My mother decided to buy a new car.",
+    "eng_target": "decided to",
+    "choices": [
+      "decided to",
+      "decided for",
+      "decided at"
+    ],
+    "translation": "母は新しい車を買うことに決めた。",
+    "jp_target": "買うことに決めた",
+    "word_count": 2
+  },
+  "931": {
+    "id": 931,
+    "idiom": "in front of ～",
+    "meaning": "③ ～の前で、～の正面で",
+    "sentence": "Let’s meet in front of the museum tomorrow.",
+    "eng_target": "in front of",
+    "choices": [
+      "in front of",
+      "in front to",
+      "in front for"
+    ],
+    "translation": "明日は博物館の正面で会おう。",
+    "jp_target": "正面で会おう",
+    "word_count": 3
+  },
+  "932": {
+    "id": 932,
+    "idiom": "one of ～",
+    "meaning": "② ～の一人、～の一つ",
+    "sentence": "Udon is one of my favourite foods.",
+    "eng_target": "one of",
+    "choices": [
+      "one of",
+      "one to",
+      "one for"
+    ],
+    "translation": "うどんは私の好物の一つです。",
+    "jp_target": "好物の一つ",
+    "word_count": 2
+  },
+  "933": {
+    "id": 933,
+    "idiom": "plan to  (原)",
+    "meaning": "③  (原) するつもりである",
+    "sentence": "Miki plans to do some volunteer work during this summer vacation.",
+    "eng_target": "plans to",
+    "choices": [
+      "plans to",
+      "plans for",
+      "plans at"
+    ],
+    "translation": "ミキはこの夏休みにボランティア活動をするつもりだ。",
+    "jp_target": "するつもりだ",
+    "word_count": 2
+  },
+  "934": {
+    "id": 934,
+    "idiom": "～ year(s) old",
+    "meaning": "② ～歳",
+    "sentence": "I travelled around Hawaii when I was 10 years old.",
+    "eng_target": "years old",
+    "choices": [
+      "years old",
+      "years age",
+      "years earlier"
+    ],
+    "translation": "10歳の時にハワイを旅しました。",
+    "jp_target": "10歳の時に",
+    "word_count": 3
+  },
+  "935": {
+    "id": 935,
+    "idiom": "help  人  with  もの・こと",
+    "meaning": "②  人 の もの・こと を手伝う",
+    "sentence": "She often helps her father with his work.",
+    "eng_target": "helps her father with",
+    "choices": [
+      "helps her father with",
+      "helps her father to",
+      "helps her father for"
+    ],
+    "translation": "彼女はお父さんの仕事をよく手伝います。",
+    "jp_target": "仕事をよく手伝います",
+    "word_count": 2
+  },
+  "936": {
+    "id": 936,
+    "idiom": "by  *oneself*",
+    "meaning": "② 一人で、独力で",
+    "sentence": "My grandfather lives by himself in Chiba.",
+    "eng_target": "by himself",
+    "choices": [
+      "by himself",
+      "for himself",
+      "to himself"
+    ],
+    "translation": "私の祖父は千葉で一人暮らしをしています。",
+    "jp_target": "一人暮らしをしています",
+    "word_count": 2
+  },
+  "937": {
+    "id": 937,
+    "idiom": "forget to  (原)",
+    "meaning": "② ～するのを忘れる",
+    "sentence": "Don’t forget to lock the door.",
+    "eng_target": "forget to",
+    "choices": [
+      "forget to",
+      "forget for",
+      "forget at"
+    ],
+    "translation": "ドアの鍵を締めるのを忘れないで。",
+    "jp_target": "忘れないで",
+    "word_count": 2
+  },
+  "938": {
+    "id": 938,
+    "idiom": "in the morning",
+    "meaning": "③ 午前中に",
+    "sentence": "I studied at the library In the morning",
+    "eng_target": "in the morning",
+    "choices": [
+      "in the morning",
+      "at the morning",
+      "on the morning"
+    ],
+    "translation": "午前中に図書館で勉強した。",
+    "jp_target": "午前中",
+    "word_count": 3
+  },
+  "939": {
+    "id": 939,
+    "idiom": "take part in ～",
+    "meaning": "③ ～に参加する",
+    "sentence": "Yumi takes part in a speech contest next month.",
+    "eng_target": "takes part in",
+    "choices": [
+      "takes part in",
+      "takes part to",
+      "takes part at"
+    ],
+    "translation": "ユミは来月スピーチコンテストに参加する。",
+    "jp_target": "参加する",
+    "word_count": 3
+  },
+  "940": {
+    "id": 940,
+    "idiom": "worry about ～",
+    "meaning": "② ～のことを心配する",
+    "sentence": "I’m OK, don’t worry about me.",
+    "eng_target": "worry about",
+    "choices": [
+      "worry about",
+      "worry of",
+      "worry for"
+    ],
+    "translation": "僕は大丈夫だから 心配しないで。",
+    "jp_target": "心配しないで",
+    "word_count": 2
+  },
+  "941": {
+    "id": 941,
+    "idiom": "go home",
+    "meaning": "② 帰宅する",
+    "sentence": "Children, it’s time to go home.",
+    "eng_target": "go home",
+    "choices": [
+      "go home",
+      "go to home",
+      "go back home"
+    ],
+    "translation": "こどもたち、家に帰る時間ですよ。",
+    "jp_target": "帰る時間",
+    "word_count": 2
+  },
+  "942": {
+    "id": 942,
+    "idiom": "how often ～",
+    "meaning": "② どれくらいの頻度で～",
+    "sentence": "How often do you play tennis?",
+    "eng_target": "How often",
+    "choices": [
+      "How often",
+      "How long",
+      "How many"
+    ],
+    "translation": "どれくらい頻繁にテニスをするの？",
+    "jp_target": "どれくらい頻繁に",
+    "word_count": 2
+  },
+  "943": {
+    "id": 943,
+    "idiom": "listen to ～",
+    "meaning": "② ～を聞く",
+    "sentence": "Mario is listening to music in his room.",
+    "eng_target": "listening to",
+    "choices": [
+      "listening to",
+      "listening for",
+      "listening at"
+    ],
+    "translation": "マリオは自分の部屋で音楽を聞いている。",
+    "jp_target": "聞いている",
+    "word_count": 2
+  },
+  "944": {
+    "id": 944,
+    "idiom": "make  A  of  B",
+    "meaning": "③  A を B で作る",
+    "sentence": "This table is made of cherry wood.",
+    "eng_target": "made of",
+    "choices": [
+      "made of",
+      "made off",
+      "made from"
+    ],
+    "translation": "このテーブルは桜の木でできている。",
+    "jp_target": "でできている",
+    "word_count": 2
+  },
+  "945": {
+    "id": 945,
+    "idiom": "stay home",
+    "meaning": "② 家にいる",
+    "sentence": "I have to stay at home today.",
+    "eng_target": "stay at home",
+    "choices": [
+      "stay at home",
+      "stay home",
+      "stay to home"
+    ],
+    "translation": "今日は家にいないといけないの。",
+    "jp_target": "家にいないといけない",
+    "word_count": 2
+  },
+  "946": {
+    "id": 946,
+    "idiom": "tell  A  to  (原)",
+    "meaning": "②  A に (原) するように言う",
+    "sentence": "My mother tells me to read more books.",
+    "eng_target": "tells me to",
+    "choices": [
+      "tells me to",
+      "tells me for",
+      "tells me of"
+    ],
+    "translation": "お母さんは僕にもっと本を読めって言うんだ。",
+    "jp_target": "本を読めって",
+    "word_count": 2
+  },
+  "947": {
+    "id": 947,
+    "idiom": "each other",
+    "meaning": "② お互い",
+    "sentence": "We have known each other since we were small.",
+    "eng_target": "each other",
+    "choices": [
+      "each other",
+      "every other",
+      "one another"
+    ],
+    "translation": "私たちは小さいころからずっとお互いのことを知っている。",
+    "jp_target": "お互いのことを知っている",
+    "word_count": 2
+  },
+  "948": {
+    "id": 948,
+    "idiom": "far away",
+    "meaning": "② 遠くに",
+    "sentence": "I saw a light far away.",
+    "eng_target": "far away",
+    "choices": [
+      "far away",
+      "far off",
+      "far along"
+    ],
+    "translation": "遠くに明かりが見えた。",
+    "jp_target": "遠くに",
+    "word_count": 2
+  },
+  "949": {
+    "id": 949,
+    "idiom": "get off (乗り物)",
+    "meaning": "④ (乗り物)から降りる",
+    "sentence": "I’ll get off the bus.",
+    "eng_target": "get off",
+    "choices": [
+      "get off",
+      "get of",
+      "get out"
+    ],
+    "translation": "バスを降りるよ。",
+    "jp_target": "降りるよ",
+    "word_count": 2
+  },
+  "950": {
+    "id": 950,
+    "idiom": "get up",
+    "meaning": "② 起きる",
+    "sentence": "My brother gets up the earliest in my family.",
+    "eng_target": "gets up",
+    "choices": [
+      "gets up",
+      "gets out",
+      "gets down"
+    ],
+    "translation": "兄は家族の中で一番早く起きる。",
+    "jp_target": "早く起きる",
+    "word_count": 2
+  },
+  "951": {
+    "id": 951,
+    "idiom": "have lunch",
+    "meaning": "② 昼食を取る",
+    "sentence": "Let’s have lunch at the new cafe!",
+    "eng_target": "have lunch",
+    "choices": [
+      "have lunch",
+      "eat lunch",
+      "take lunch"
+    ],
+    "translation": "あの新しいカフェで昼食をとろうよ！",
+    "jp_target": "昼食をとろう",
+    "word_count": 2
+  },
+  "952": {
+    "id": 952,
+    "idiom": "more than ～",
+    "meaning": "② ～を超える、～より多い",
+    "sentence": "There were more than 100 people at the party.",
+    "eng_target": "more than",
+    "choices": [
+      "more than",
+      "more that",
+      "more over"
+    ],
+    "translation": "そのパーティには100人超えの人たちがいたよ。",
+    "jp_target": "100人超え",
+    "word_count": 2
+  },
+  "953": {
+    "id": 953,
+    "idiom": "pay  A  for  B",
+    "meaning": "②  B のために A を支払う",
+    "sentence": "Tom paid 100 dollars for dinner with Julia.",
+    "eng_target": "paid 100 dollars for",
+    "choices": [
+      "paid 100 dollars for",
+      "paid 100 dollars to",
+      "paid 100 dollars at"
+    ],
+    "translation": "トムはジュリアとの夕食のために100ドル払った。",
+    "jp_target": "支払った",
+    "word_count": 2
+  },
+  "954": {
+    "id": 954,
+    "idiom": "run away",
+    "meaning": "② 逃げる、走り去る",
+    "sentence": "The news says a monkey ran away from the zoo.",
+    "eng_target": "ran away",
+    "choices": [
+      "ran away",
+      "ran along",
+      "ran off"
+    ],
+    "translation": "ニュースによると、動物園から1匹の猿が逃げた。",
+    "jp_target": "逃げた",
+    "word_count": 2
+  },
+  "955": {
+    "id": 955,
+    "idiom": "try on ～",
+    "meaning": "② ～を試着する",
+    "sentence": "Excuse me, can I try on this jacket?",
+    "eng_target": "try on",
+    "choices": [
+      "try on",
+      "try in",
+      "try out"
+    ],
+    "translation": "すまみせん、この上着を試着できますか？",
+    "jp_target": "試着できますか",
+    "word_count": 2
+  },
+  "956": {
+    "id": 956,
+    "idiom": "turn off ～",
+    "meaning": "② ～を消す、～を止める",
+    "sentence": "Please turn off the light when you leave the room.",
+    "eng_target": "turn off",
+    "choices": [
+      "turn off",
+      "turn of",
+      "turn out"
+    ],
+    "translation": "部屋を出るときは明かりを消してください。",
+    "jp_target": "消してください",
+    "word_count": 2
+  },
+  "957": {
+    "id": 957,
+    "idiom": "wait for ～",
+    "meaning": "② ～を待つ",
+    "sentence": "I'll wait for you at the restaurant.",
+    "eng_target": "wait for",
+    "choices": [
+      "wait for",
+      "wait to",
+      "wait of"
+    ],
+    "translation": "レストランで君を待ってるね。",
+    "jp_target": "待ってるね",
+    "word_count": 2
+  },
+  "958": {
+    "id": 958,
+    "idiom": "because of ～",
+    "meaning": "② ～のために",
+    "sentence": "He was late because of the snow.",
+    "eng_target": "because of",
+    "choices": [
+      "because of",
+      "because for",
+      "because to"
+    ],
+    "translation": "彼は雪のために遅れた。",
+    "jp_target": "のために",
+    "word_count": 2
+  },
+  "959": {
+    "id": 959,
+    "idiom": "do well on ～",
+    "meaning": "③ ～でうまくいく、～で良い結果を出す",
+    "sentence": "I hope I can do well on the English test.",
+    "eng_target": "do well on",
+    "choices": [
+      "do well on",
+      "do well to",
+      "do well for"
+    ],
+    "translation": "英語のテストで良い結果が出るといいなあ。",
+    "jp_target": "良い結果が出るといいなあ",
+    "word_count": 3
+  },
+  "960": {
+    "id": 960,
+    "idiom": "one day",
+    "meaning": "② いつか、ある日",
+    "sentence": "She wants to travel in Europe one day.",
+    "eng_target": "one day",
+    "choices": [
+      "one day",
+      "some day",
+      "any day"
+    ],
+    "translation": "彼女はヨーロッパをいつか旅したいと思っている。",
+    "jp_target": "いつか",
+    "word_count": 2
+  },
+  "961": {
+    "id": 961,
+    "idiom": "too ･･･ to  (原) ～",
+    "meaning": "③ あまりにも･･･なので、 (原)～ できない",
+    "sentence": "The man was too busy to have lunch today.",
+    "eng_target": "too busy to",
+    "choices": [
+      "too busy to",
+      "too busy for",
+      "so busy that"
+    ],
+    "translation": "その男性は今日はあまりにも忙しすぎて昼食を食べられなかった。",
+    "jp_target": "忙しすぎて昼食を食べられなかった",
+    "word_count": 2
+  },
+  "962": {
+    "id": 962,
+    "idiom": "all over the world",
+    "meaning": "④ 世界中で",
+    "sentence": "That singer is popular all over the world.",
+    "eng_target": "all over the world",
+    "choices": [
+      "all over the world",
+      "all around the world",
+      "all through the world"
+    ],
+    "translation": "あの歌手は世界中で人気がある。",
+    "jp_target": "世界中で",
+    "word_count": 4
+  },
+  "963": {
+    "id": 963,
+    "idiom": "arrive in/at ～",
+    "meaning": "② ～に着く、～に到着する",
+    "sentence": "We will arrive at Omura station soon.",
+    "eng_target": "arrive at",
+    "choices": [
+      "arrive at",
+      "arrive to",
+      "arrive in"
+    ],
+    "translation": "もうすぐ大村駅に着くよ。",
+    "jp_target": "到着する",
+    "word_count": 3
+  },
+  "964": {
+    "id": 964,
+    "idiom": "at first",
+    "meaning": "② 最初は",
+    "sentence": "At first I didn’t like math, but now I like the subject.",
+    "eng_target": "At first",
+    "choices": [
+      "At first",
+      "At once",
+      "At last"
+    ],
+    "translation": "最初は数学じは好きじゃなかったけど、今ではその教科が好きだ。",
+    "jp_target": "最初は",
+    "word_count": 2
+  },
+  "965": {
+    "id": 965,
+    "idiom": "*be*  afraid of ～",
+    "meaning": "③ ～を恐れる、～を怖がる",
+    "sentence": "Are you afraid of snakes?",
+    "eng_target": "afraid of",
+    "choices": [
+      "afraid of",
+      "afraid for",
+      "afraid with"
+    ],
+    "translation": "ヘビが怖いの？",
+    "jp_target": "怖いの",
+    "word_count": 3
+  },
+  "966": {
+    "id": 966,
+    "idiom": "*be*  sick in bed",
+    "meaning": "④ 病気で寝ている",
+    "sentence": "He has been sick in bed for 4 days.",
+    "eng_target": "sick in bed",
+    "choices": [
+      "sick in bed",
+      "sick to bed",
+      "sick for bed"
+    ],
+    "translation": "彼は病気で4日間ずっと寝ている。",
+    "jp_target": "寝ている",
+    "word_count": 4
+  },
+  "967": {
+    "id": 967,
+    "idiom": "get home",
+    "meaning": "② 帰宅する、家にたどり着く",
+    "sentence": "When I got home, it started to rain.",
+    "eng_target": "got home",
+    "choices": [
+      "got home",
+      "got to home",
+      "got back home"
+    ],
+    "translation": "私が家に着いたら雨が降り出した。",
+    "jp_target": "家に着いたら",
+    "word_count": 2
+  },
+  "968": {
+    "id": 968,
+    "idiom": "invite  A to  B",
+    "meaning": "②  A を B に招待する",
+    "sentence": "I will invite Kana to lunch.",
+    "eng_target": "invite Kana to",
+    "choices": [
+      "invite Kana to",
+      "invite Kana for",
+      "invite Kana at"
+    ],
+    "translation": "カナをランチに招待するつもりよ。",
+    "jp_target": "招待する",
+    "word_count": 2
+  },
+  "969": {
+    "id": 969,
+    "idiom": "lots of ～",
+    "meaning": "② たくさんの～",
+    "sentence": "Look!  There are lots of people near the station!",
+    "eng_target": "lots of",
+    "choices": [
+      "lots of",
+      "lots for",
+      "lots to"
+    ],
+    "translation": "見て！駅の近くにたくさんの人がいる！",
+    "jp_target": "たくさんの人",
+    "word_count": 2
+  },
+  "970": {
+    "id": 970,
+    "idiom": "on business",
+    "meaning": "② 仕事で",
+    "sentence": "My mother is now in Kyoto on business.",
+    "eng_target": "on business",
+    "choices": [
+      "on business",
+      "for business",
+      "at business"
+    ],
+    "translation": "私の母は今仕事で京都にいる。",
+    "jp_target": "仕事で",
+    "word_count": 2
+  },
+  "971": {
+    "id": 971,
+    "idiom": "stay at ～",
+    "meaning": "② ～に泊まる",
+    "sentence": "She is going to stay at a 5 star hotel tonight.",
+    "eng_target": "stay at",
+    "choices": [
+      "stay at",
+      "stay to",
+      "stay on"
+    ],
+    "translation": "彼女は今晩は5つ星ホテルに泊まる予定だ。",
+    "jp_target": "泊まる予定だ",
+    "word_count": 2
+  },
+  "972": {
+    "id": 972,
+    "idiom": "want to be/become",
+    "meaning": "③ ～になりたいと思う",
+    "sentence": "I want to be a game creator.",
+    "eng_target": "want to be",
+    "choices": [
+      "want to be",
+      "want to being",
+      "want to do"
+    ],
+    "translation": "私はゲーム制作者になりたい。",
+    "jp_target": "なりたい",
+    "word_count": 4
+  },
+  "973": {
+    "id": 973,
+    "idiom": "all day long",
+    "meaning": "③ 1日中",
+    "sentence": "It will be sunny tomorrow all day long.",
+    "eng_target": "all day long",
+    "choices": [
+      "all day long",
+      "all over the day",
+      "all day through"
+    ],
+    "translation": "明日は一日中晴れるでしょう。",
+    "jp_target": "一日中",
+    "word_count": 3
+  },
+  "974": {
+    "id": 974,
+    "idiom": "both A  andB",
+    "meaning": "②  A も B も両方とも",
+    "sentence": "I like both cats and dogs.",
+    "eng_target": "both cats and",
+    "choices": [
+      "both cats and",
+      "both cats or",
+      "both cats with"
+    ],
+    "translation": "私は猫も犬も両方とも好きです。",
+    "jp_target": "両方とも",
+    "word_count": 2
+  },
+  "975": {
+    "id": 975,
+    "idiom": "look like ～",
+    "meaning": "② ～に似ている、～のように見える",
+    "sentence": "That waiter looks like Ken.",
+    "eng_target": "looks like",
+    "choices": [
+      "looks like",
+      "looks as",
+      "looks of"
+    ],
+    "translation": "あのウェイターさんはケンに似ている。",
+    "jp_target": "に似ている",
+    "word_count": 2
+  },
+  "976": {
+    "id": 976,
+    "idiom": "put on ～",
+    "meaning": "② ～を着る、～を身につける",
+    "sentence": "Put on your coat because it’s cold outside.",
+    "eng_target": "Put on",
+    "choices": [
+      "Put on",
+      "Put in",
+      "Put out"
+    ],
+    "translation": "外は寒いからコートを着なさい。",
+    "jp_target": "着なさい",
+    "word_count": 2
+  },
+  "977": {
+    "id": 977,
+    "idiom": "speak to ～",
+    "meaning": "② ～に話しかける",
+    "sentence": "I spoke to a woman looking at a map.",
+    "eng_target": "spoke to",
+    "choices": [
+      "spoke to",
+      "spoke for",
+      "spoke of"
+    ],
+    "translation": "地図を見ていた女性に話しかけた。",
+    "jp_target": "話しかけた",
+    "word_count": 2
+  },
+  "978": {
+    "id": 978,
+    "idiom": "stay in ～",
+    "meaning": "② ～に滞在する",
+    "sentence": "My family is going to stay in Hiroshima this summer.",
+    "eng_target": "stay in",
+    "choices": [
+      "stay in",
+      "stay at",
+      "stay to"
+    ],
+    "translation": "私の家族は今年の夏は広島に滞在する予定です。",
+    "jp_target": "滞在する予定です",
+    "word_count": 2
+  },
+  "979": {
+    "id": 979,
+    "idiom": "[比較級] than any other [単数]",
+    "meaning": "③ ほかのどんな[単数]よりも[比較級]",
+    "sentence": "She can run faster than any other student in my class.",
+    "eng_target": "faster than any other student",
+    "choices": [
+      "faster than any other student",
+      "faster than any other students",
+      "faster than another student"
+    ],
+    "translation": "彼女はうちのクラスの他のどの生徒よりも速く走ることができる。",
+    "jp_target": "他のどの生徒よりも速く",
+    "word_count": 3
+  },
+  "980": {
+    "id": 980,
+    "idiom": "travel to ～",
+    "meaning": "② ～に行く、～へ旅行する",
+    "sentence": "I traveled to Kagoshima by Shinkansen.",
+    "eng_target": "traveled to",
+    "choices": [
+      "traveled to",
+      "traveled for",
+      "traveled at"
+    ],
+    "translation": "新幹線で鹿児島へ旅行した。",
+    "jp_target": "旅行した",
+    "word_count": 2
+  },
+  "981": {
+    "id": 981,
+    "idiom": "a pair of ～",
+    "meaning": "③ 1組の～",
+    "sentence": "I bought a new pair of shoes.",
+    "eng_target": "pair of",
+    "choices": [
+      "pair of",
+      "pair for",
+      "pair to"
+    ],
+    "translation": "私は一組の新しい靴を買った。",
+    "jp_target": "一組の新しい靴",
+    "word_count": 3
+  },
+  "982": {
+    "id": 982,
+    "idiom": "anything else",
+    "meaning": "② ほかに何か",
+    "sentence": "Do you want anything else?",
+    "eng_target": "anything else",
+    "choices": [
+      "anything else",
+      "something else",
+      "nothing else"
+    ],
+    "translation": "他に何かいりますか？",
+    "jp_target": "ほかに何か",
+    "word_count": 2
+  },
+  "983": {
+    "id": 983,
+    "idiom": "*be*  proud of ～",
+    "meaning": "③ 〜を誇りに思う",
+    "sentence": "She is proud of her son.",
+    "eng_target": "proud of",
+    "choices": [
+      "proud of",
+      "proud for",
+      "proud with"
+    ],
+    "translation": "彼女は息子を誇りに思っている。",
+    "jp_target": "誇りに思っている",
+    "word_count": 3
+  },
+  "984": {
+    "id": 984,
+    "idiom": "*be*  ready to  (原)",
+    "meaning": "③  (原) する準備ができている",
+    "sentence": "Are you ready to go to the party?",
+    "eng_target": "ready to",
+    "choices": [
+      "ready to",
+      "ready for",
+      "ready of"
+    ],
+    "translation": "パーティに行く準備はできてる？",
+    "jp_target": "準備はできてる",
+    "word_count": 3
+  },
+  "985": {
+    "id": 985,
+    "idiom": "do  *one's*  best",
+    "meaning": "③ 最善を尽くす",
+    "sentence": "I’ll do my best in the next exam.",
+    "eng_target": "do my best",
+    "choices": [
+      "do my best",
+      "make my best",
+      "take my best"
+    ],
+    "translation": "次の試験では最善を尽くすよ。",
+    "jp_target": "最善を尽くすよ",
+    "word_count": 3
+  },
+  "986": {
+    "id": 986,
+    "idiom": "far from ～",
+    "meaning": "② ～から遠くに",
+    "sentence": "Is the shop far from the city hall?",
+    "eng_target": "far from",
+    "choices": [
+      "far from",
+      "far of",
+      "far to"
+    ],
+    "translation": "そのお店は市役所から遠いの？",
+    "jp_target": "遠いの",
+    "word_count": 2
+  },
+  "987": {
+    "id": 987,
+    "idiom": "find out ～",
+    "meaning": "② ～を知る、～を見つけ出す",
+    "sentence": "Please visit our website to find out more information.",
+    "eng_target": "find out",
+    "choices": [
+      "find out",
+      "find in",
+      "find of"
+    ],
+    "translation": "もっと情報を知るためには、私たちのウェブサイトを見てください。",
+    "jp_target": "見つけ出す",
+    "word_count": 2
+  },
+  "988": {
+    "id": 988,
+    "idiom": "get married",
+    "meaning": "② 結婚する",
+    "sentence": "My sister got married two years ago.",
+    "eng_target": "got married",
+    "choices": [
+      "got married",
+      "got marry",
+      "got marrying"
+    ],
+    "translation": "ぼくの姉は2年前に結婚した。",
+    "jp_target": "結婚した",
+    "word_count": 2
+  },
+  "989": {
+    "id": 989,
+    "idiom": "get to ～",
+    "meaning": "② ～に着く",
+    "sentence": "We have to get to the station somehow!",
+    "eng_target": "get to",
+    "choices": [
+      "get to",
+      "get for",
+      "get at"
+    ],
+    "translation": "何とかして駅に到着しなくちゃ！",
+    "jp_target": "到着しなくちゃ",
+    "word_count": 2
+  },
+  "990": {
+    "id": 990,
+    "idiom": "give  人  a ride",
+    "meaning": "③  人 を車で送る",
+    "sentence": "My father gave me a ride to school this morning.",
+    "eng_target": "gave me a ride",
+    "choices": [
+      "gave me a ride",
+      "gave me ride",
+      "gave me drive"
+    ],
+    "translation": "今朝はお父さんが学校まで私を車で送ってくれた。",
+    "jp_target": "車で送ってくれた",
+    "word_count": 3
+  },
+  "991": {
+    "id": 991,
+    "idiom": "go into ～",
+    "meaning": "② ～に入る",
+    "sentence": "Please take off your shoes when you go into the house.",
+    "eng_target": "go into",
+    "choices": [
+      "go into",
+      "go to",
+      "go for"
+    ],
+    "translation": "家に入るときは靴を脱いでください。",
+    "jp_target": "入るときは",
+    "word_count": 2
+  },
+  "992": {
+    "id": 992,
+    "idiom": "go to work",
+    "meaning": "③ 仕事に行く",
+    "sentence": "I go to work on foot every day.",
+    "eng_target": "go to work",
+    "choices": [
+      "go to work",
+      "go work",
+      "go to working"
+    ],
+    "translation": "毎日歩いて仕事に行く。",
+    "jp_target": "歩いて仕事に行く",
+    "word_count": 3
+  },
+  "993": {
+    "id": 993,
+    "idiom": "have time to  (原)",
+    "meaning": "③  (原) する時間がある",
+    "sentence": "Do you have time to talk now?",
+    "eng_target": "have time to",
+    "choices": [
+      "have time to",
+      "have time for",
+      "have time at"
+    ],
+    "translation": "今お話しする時間がありますか？",
+    "jp_target": "お話しする時間",
+    "word_count": 3
+  },
+  "994": {
+    "id": 994,
+    "idiom": "hear about ～",
+    "meaning": "② ～について聞く",
+    "sentence": "Did you hear about the train accident?",
+    "eng_target": "hear about",
+    "choices": [
+      "hear about",
+      "hear to",
+      "hear for"
+    ],
+    "translation": "列車事故について聞きましたか？",
+    "jp_target": "について聞きましたか",
+    "word_count": 2
+  },
+  "995": {
+    "id": 995,
+    "idiom": "in the world",
+    "meaning": "③ 世界中で",
+    "sentence": "That mountain is the highest in the world.",
+    "eng_target": "in the world",
+    "choices": [
+      "in the world",
+      "at the world",
+      "of the world"
+    ],
+    "translation": "あの山は世界中で一番高いです。",
+    "jp_target": "世界中で",
+    "word_count": 3
+  },
+  "996": {
+    "id": 996,
+    "idiom": "most of ～",
+    "meaning": "② ～のほとんど",
+    "sentence": "Most of the books here are old.",
+    "eng_target": "Most of",
+    "choices": [
+      "Most of",
+      "Most for",
+      "Most to"
+    ],
+    "translation": "ここにあるほとんどの本は古いです。",
+    "jp_target": "ほとんど",
+    "word_count": 2
+  },
+  "997": {
+    "id": 997,
+    "idiom": "near here",
+    "meaning": "② この近くに",
+    "sentence": "Are there any good restaurants near here?",
+    "eng_target": "near here",
+    "choices": [
+      "near here",
+      "near from here",
+      "near to here"
+    ],
+    "translation": "この近くにいいレストランはありますか？",
+    "jp_target": "この近くに",
+    "word_count": 2
+  },
+  "998": {
+    "id": 998,
+    "idiom": "next to ～",
+    "meaning": "② ～のとなりに",
+    "sentence": "He works at the coffee shop next to the post office.",
+    "eng_target": "next to",
+    "choices": [
+      "next to",
+      "next for",
+      "next from"
+    ],
+    "translation": "彼は郵便局の隣のカフェで働いている。",
+    "jp_target": "隣の",
+    "word_count": 2
+  },
+  "999": {
+    "id": 999,
+    "idiom": "not ～ at all",
+    "meaning": "③ まったく～ない",
+    "sentence": "I didn’t understand the story at all.",
+    "eng_target": "at all",
+    "choices": [
+      "at all",
+      "to all",
+      "for all"
+    ],
+    "translation": "その話が全く分からなかった。",
+    "jp_target": "全く分からなかった",
+    "word_count": 3
+  },
+  "1000": {
+    "id": 1000,
+    "idiom": "not have to  (原)",
+    "meaning": "③  (原) しなくてもよい、 (原) する必要がない",
+    "sentence": "You don’t have to eat that.",
+    "eng_target": "don't have to",
+    "choices": [
+      "don't have to",
+      "don't have to eat",
+      "don't have for"
+    ],
+    "translation": "それを食べなくてもいいよ。",
+    "jp_target": "食べなくてもいい",
+    "word_count": 3
+  },
+  "1001": {
+    "id": 1001,
+    "idiom": "pick up 〜",
+    "meaning": "② 〜を車でむかえに行く",
+    "sentence": "My mother will go to pick up Misaki.",
+    "eng_target": "pick up",
+    "choices": [
+      "pick up",
+      "pick out",
+      "pick down"
+    ],
+    "translation": "母がミサキを車で迎えに行きます。",
+    "jp_target": "迎えに行きます",
+    "word_count": 2
+  },
+  "1002": {
+    "id": 1002,
+    "idiom": "stay with 〜",
+    "meaning": "② 〜のところに泊まる",
+    "sentence": "Misaki is going to stay with us tonight.",
+    "eng_target": "stay with",
+    "choices": [
+      "stay with",
+      "stay to",
+      "stay of"
+    ],
+    "translation": "ミサキは今夜うひに泊まることになってます。",
+    "jp_target": "泊まることになってます",
+    "word_count": 2
+  },
+  "1003": {
+    "id": 1003,
+    "idiom": "stop doing",
+    "meaning": "② 〜するのをやめる",
+    "sentence": "We should stop talking during lessons.",
+    "eng_target": "stop talking",
+    "choices": [
+      "stop talking",
+      "stop to talk",
+      "stop talk"
+    ],
+    "translation": "授業中は話すのをやめるべきです。",
+    "jp_target": "やめるべきです",
+    "word_count": 2
+  },
+  "1004": {
+    "id": 1004,
+    "idiom": "take a trip",
+    "meaning": "③ 旅行する",
+    "sentence": "Are you going to take a trip this weekend?",
+    "eng_target": "take a trip",
+    "choices": [
+      "take a trip",
+      "take a trip to",
+      "take a trip for"
+    ],
+    "translation": "今週末は旅行に行くつもりですか？",
+    "jp_target": "旅行に行く",
+    "word_count": 3
+  },
+  "1005": {
+    "id": 1005,
+    "idiom": "take care of 〜",
+    "meaning": "③ 〜の世話をする",
+    "sentence": "Bob usually takes care of  two cats and a dog.",
+    "eng_target": "takes care of",
+    "choices": [
+      "takes care of",
+      "takes care for",
+      "takes care with"
+    ],
+    "translation": "ボブは2匹の猫と1匹の犬の世話をいつもしている。",
+    "jp_target": "世話をする",
+    "word_count": 3
+  },
+  "1006": {
+    "id": 1006,
+    "idiom": "twice a week",
+    "meaning": "③ 週に2回",
+    "sentence": "He comes here twice a week.",
+    "eng_target": "twice a week",
+    "choices": [
+      "twice a week",
+      "two times a week",
+      "twice week"
+    ],
+    "translation": "彼は週に2回ここに来る。",
+    "jp_target": "週に2回",
+    "word_count": 3
+  },
+  "1007": {
+    "id": 1007,
+    "idiom": "wake up",
+    "meaning": "② 目が覚める、起きる",
+    "sentence": "I woke up very early today.",
+    "eng_target": "woke up",
+    "choices": [
+      "woke up",
+      "woke out",
+      "woke down"
+    ],
+    "translation": "今日は早朝に目が覚めた。",
+    "jp_target": "目が覚めた",
+    "word_count": 2
+  },
+  "1008": {
+    "id": 1008,
+    "idiom": "work for 〜",
+    "meaning": "② 〜で働く、～に勤める",
+    "sentence": "Chris works for an airline company.",
+    "eng_target": "works for",
+    "choices": [
+      "works for",
+      "works to",
+      "works of"
+    ],
+    "translation": "クリスは航空会社で働いてる。",
+    "jp_target": "働いてる",
+    "word_count": 2
+  },
+  "1009": {
+    "id": 1009,
+    "idiom": "a lot",
+    "meaning": "② ずいぶん、大変、非常に",
+    "sentence": "He helped me a lot when I was in the USA.",
+    "eng_target": "a lot",
+    "choices": [
+      "a lot",
+      "a little",
+      "a few"
+    ],
+    "translation": "私がアメリカにいたとき、彼はずいぶん助けてくれた。",
+    "jp_target": "ずいぶん",
+    "word_count": 2
+  },
+  "1010": {
+    "id": 1010,
+    "idiom": "at work",
+    "meaning": "② 仕事中で、職場で",
+    "sentence": "Are you still at work?",
+    "eng_target": "at work",
+    "choices": [
+      "at work",
+      "for work",
+      "to work"
+    ],
+    "translation": "まだ仕事中ですか？",
+    "jp_target": "仕事中",
+    "word_count": 2
+  },
+  "1011": {
+    "id": 1011,
+    "idiom": "*be*  different from 〜",
+    "meaning": "③ 〜と異なる",
+    "sentence": "My idea is different from yours.",
+    "eng_target": "different from",
+    "choices": [
+      "different from",
+      "different to",
+      "different of"
+    ],
+    "translation": "私の考えはあなたのものとは異なります。",
+    "jp_target": "異なります",
+    "word_count": 3
+  },
+  "1012": {
+    "id": 1012,
+    "idiom": "*be*  in the hospital",
+    "meaning": "④ 入院している",
+    "sentence": "Debbie has been in the hospital since last Sunday.",
+    "eng_target": "in the hospital",
+    "choices": [
+      "in the hospital",
+      "at the hospital",
+      "to the hospital"
+    ],
+    "translation": "デビーはこの前の日曜から入院している。",
+    "jp_target": "入院している",
+    "word_count": 4
+  },
+  "1013": {
+    "id": 1013,
+    "idiom": "*be*  sold out",
+    "meaning": "③ 売り切れている",
+    "sentence": "The concert ticket was sold out quickly.",
+    "eng_target": "sold out",
+    "choices": [
+      "sold out",
+      "sold of",
+      "sold for"
+    ],
+    "translation": "そのコンサートのチケットはすばやく売り切れた。",
+    "jp_target": "売り切れた",
+    "word_count": 3
+  },
+  "1014": {
+    "id": 1014,
+    "idiom": "between A  and B",
+    "meaning": "②  A と B の間に",
+    "sentence": "There are no secrets between you and me.",
+    "eng_target": "between you and",
+    "choices": [
+      "between you and",
+      "between you or",
+      "between you with"
+    ],
+    "translation": "君と僕との間には秘密なんてない。",
+    "jp_target": "間には",
+    "word_count": 2
+  },
+  "1015": {
+    "id": 1015,
+    "idiom": "catch a cold",
+    "meaning": "③ 風邪をひく",
+    "sentence": "Erika often catches a cold.",
+    "eng_target": "catches a cold",
+    "choices": [
+      "catches a cold",
+      "takes a cold",
+      "gets a cold"
+    ],
+    "translation": "エリカはよく風邪をひく。",
+    "jp_target": "風邪をひく",
+    "word_count": 3
+  },
+  "1016": {
+    "id": 1016,
+    "idiom": "come back",
+    "meaning": "② 戻ってくる",
+    "sentence": "You need to come back before dinner.",
+    "eng_target": "come back",
+    "choices": [
+      "come back",
+      "come for",
+      "come to"
+    ],
+    "translation": "晩御飯の前に戻ってくるんだよ。",
+    "jp_target": "戻ってくるんだよ",
+    "word_count": 2
+  },
+  "1017": {
+    "id": 1017,
+    "idiom": "come home",
+    "meaning": "② 家に帰る",
+    "sentence": "Can you come home early?",
+    "eng_target": "come home",
+    "choices": [
+      "come home",
+      "come to home",
+      "come back home"
+    ],
+    "translation": "今日は早く家に帰られる？",
+    "jp_target": "家に帰られる",
+    "word_count": 2
+  },
+  "1018": {
+    "id": 1018,
+    "idiom": "do  *one's*  homework",
+    "meaning": "③ 宿題をする",
+    "sentence": "I do my homework at the library.",
+    "eng_target": "do my homework",
+    "choices": [
+      "do my homework",
+      "make my homework",
+      "take my homework"
+    ],
+    "translation": "私は図書館で宿題をする",
+    "jp_target": "宿題をする",
+    "word_count": 3
+  },
+  "1019": {
+    "id": 1019,
+    "idiom": "for free",
+    "meaning": "② 無料で",
+    "sentence": "Children can enter the museum for free.",
+    "eng_target": "for free",
+    "choices": [
+      "for free",
+      "for cheap",
+      "for none"
+    ],
+    "translation": "子どもたちは美術館に無料で入場できる。",
+    "jp_target": "無料で",
+    "word_count": 2
+  },
+  "1020": {
+    "id": 1020,
+    "idiom": "for the first time",
+    "meaning": "④ 初めて",
+    "sentence": "Frank took a plane for the first time.",
+    "eng_target": "for the first time",
+    "choices": [
+      "for the first time",
+      "for first time",
+      "at the first time"
+    ],
+    "translation": "フランクは初めて飛行機に乗った。",
+    "jp_target": "初めて",
+    "word_count": 4
+  },
+  "1021": {
+    "id": 1021,
+    "idiom": "go back to 〜",
+    "meaning": "③ 〜に戻る",
+    "sentence": "The exchange student went back to the UK.",
+    "eng_target": "went back to",
+    "choices": [
+      "went back to",
+      "went back for",
+      "went back at"
+    ],
+    "translation": "その交換留学生はイギリスに戻った。",
+    "jp_target": "戻った",
+    "word_count": 3
+  },
+  "1022": {
+    "id": 1022,
+    "idiom": "How far 〜 ?",
+    "meaning": "② どれくらいの距離で〜？、どれくらい離れて～？",
+    "sentence": "How far is it from here to the station?",
+    "eng_target": "How far",
+    "choices": [
+      "How far",
+      "How long",
+      "How many"
+    ],
+    "translation": "ここから駅までどれくらいの距離ですか？",
+    "jp_target": "どれくらいの距離",
+    "word_count": 2
+  },
+  "1023": {
+    "id": 1023,
+    "idiom": "How many times 〜 ?",
+    "meaning": "③ 何回 〜 ？",
+    "sentence": "How many times have you been to Mexico?",
+    "eng_target": "How many times",
+    "choices": [
+      "How many times",
+      "How much times",
+      "How often times"
+    ],
+    "translation": "あなたは何回メキシコに行ったことがありますか？",
+    "jp_target": "何回",
+    "word_count": 3
+  },
+  "1024": {
+    "id": 1024,
+    "idiom": "hurry up",
+    "meaning": "② 急ぐ",
+    "sentence": "Hurry up! The movie starts in 5 mins!",
+    "eng_target": "Hurry up",
+    "choices": [
+      "Hurry up",
+      "Hurry out",
+      "Hurry down"
+    ],
+    "translation": "急いで！映画が5分で始まるよ！",
+    "jp_target": "急いで",
+    "word_count": 2
+  },
+  "1025": {
+    "id": 1025,
+    "idiom": "in the future",
+    "meaning": "③ 将来、未来に",
+    "sentence": "What do you want to do in the future?",
+    "eng_target": "in the future",
+    "choices": [
+      "in the future",
+      "in the future to",
+      "in the future for"
+    ],
+    "translation": "将来どんな仕事をしたいですか。",
+    "jp_target": "将来",
+    "word_count": 3
+  },
+  "1026": {
+    "id": 1026,
+    "idiom": "not 〜 yet",
+    "meaning": "② まだ〜ない",
+    "sentence": "I am not hungry yet.",
+    "eng_target": "not hungry yet",
+    "choices": [
+      "not hungry yet",
+      "not hungry yet to",
+      "not hungry yet for"
+    ],
+    "translation": "まだお腹は減っていません。",
+    "jp_target": "まだお腹は減っていません",
+    "word_count": 2
+  },
+  "1027": {
+    "id": 1027,
+    "idiom": "on vacation",
+    "meaning": "② 休暇中で",
+    "sentence": "George is going to Sri Lanka on vacation this summer.",
+    "eng_target": "on vacation",
+    "choices": [
+      "on vacation",
+      "at vacation",
+      "for vacation"
+    ],
+    "translation": "ジョージは今年の夏、休暇でスリランカに行く予定です。",
+    "jp_target": "休暇で",
+    "word_count": 2
+  },
+  "1028": {
+    "id": 1028,
+    "idiom": "put  A  in  B",
+    "meaning": "② A を B に入れる",
+    "sentence": "He put all his clothes in the box.",
+    "eng_target": "put all his clothes in",
+    "choices": [
+      "put all his clothes in",
+      "put all his clothes to",
+      "put all his clothes of"
+    ],
+    "translation": "彼はすべての自分の服をその箱に入れた。",
+    "jp_target": "箱に入れた",
+    "word_count": 2
+  },
+  "1029": {
+    "id": 1029,
+    "idiom": "stay up late",
+    "meaning": "③ 遅くまで起きている",
+    "sentence": "I’m sleepy today because I stayed up late last night.",
+    "eng_target": "stayed up late",
+    "choices": [
+      "stayed up late",
+      "stayed out late",
+      "stayed down late"
+    ],
+    "translation": "昨日の夜遅くまで起きていたので、今日は眠たい。",
+    "jp_target": "遅くまで起きていた",
+    "word_count": 3
+  },
+  "1030": {
+    "id": 1030,
+    "idiom": "such as 〜",
+    "meaning": "② たとえば〜のような",
+    "sentence": "Do you like spicy foods such as Tom yum goong?",
+    "eng_target": "such as",
+    "choices": [
+      "such as",
+      "such of",
+      "such like"
+    ],
+    "translation": "あなたは、たとえばトムヤムクンのような辛い料理は好きですか？",
+    "jp_target": "たとえば",
+    "word_count": 2
+  },
+  "1031": {
+    "id": 1031,
+    "idiom": "take a walk",
+    "meaning": "③ 散歩する",
+    "sentence": "Let’s take a walk this evening.",
+    "eng_target": "take a walk",
+    "choices": [
+      "take a walk",
+      "make a walk",
+      "take walking"
+    ],
+    "translation": "今晩一緒に散歩しましょう。",
+    "jp_target": "散歩しましょう",
+    "word_count": 3
+  },
+  "1032": {
+    "id": 1032,
+    "idiom": "take lessons",
+    "meaning": "② レッスンを受ける",
+    "sentence": "My sister takes piano lessons.",
+    "eng_target": "takes piano lessons",
+    "choices": [
+      "takes piano lessons",
+      "takes piano lessons to",
+      "takes piano lessons for"
+    ],
+    "translation": "私の妹はピアノレッスンを受けている。",
+    "jp_target": "レッスンを受けている",
+    "word_count": 2
+  },
+  "1033": {
+    "id": 1033,
+    "idiom": "these days",
+    "meaning": "② 近ごろ、最近",
+    "sentence": "How are you doing these days?",
+    "eng_target": "these days",
+    "choices": [
+      "these days",
+      "those days",
+      "this days"
+    ],
+    "translation": "近頃はどうしてる？",
+    "jp_target": "近頃は",
+    "word_count": 2
+  },
+  "1034": {
+    "id": 1034,
+    "idiom": "write back",
+    "meaning": "② 返事を書く",
+    "sentence": "I hope you write back soon.",
+    "eng_target": "write back",
+    "choices": [
+      "write back",
+      "write to",
+      "write back to"
+    ],
+    "translation": "あなたがすぐに返事をくれるといいな。",
+    "jp_target": "返事をくれる",
+    "word_count": 2
+  },
+  "1035": {
+    "id": 1035,
+    "idiom": "write to 〜",
+    "meaning": "② 〜に手紙を書く",
+    "sentence": "Hanna writes to me every month.",
+    "eng_target": "writes to",
+    "choices": [
+      "writes to",
+      "writes for",
+      "writes of"
+    ],
+    "translation": "ハンナは毎月私に手紙を書いてくれる。",
+    "jp_target": "手紙を書いてくれる",
+    "word_count": 2
+  },
+  "1036": {
+    "id": 1036,
+    "idiom": "a part of 〜",
+    "meaning": "③ 〜の一部",
+    "sentence": "Cleaning this room is a part of his job.",
+    "eng_target": "part of",
+    "choices": [
+      "part of",
+      "part for",
+      "part to"
+    ],
+    "translation": "この部屋を掃除することは彼の仕事の一部です。",
+    "jp_target": "一部です",
+    "word_count": 3
+  },
+  "1037": {
+    "id": 1037,
+    "idiom": "a piece of 〜",
+    "meaning": "③ 1切れの〜、1枚の〜",
+    "sentence": "Would you like a piece of cake?",
+    "eng_target": "piece of",
+    "choices": [
+      "piece of",
+      "piece for",
+      "piece to"
+    ],
+    "translation": "ケーキを一ついかがですか？",
+    "jp_target": "1切れの",
+    "word_count": 3
+  },
+  "1038": {
+    "id": 1038,
+    "idiom": "all the way",
+    "meaning": "③ その間ずっと、はるばる",
+    "sentence": "He had to walk all the way to the pool.",
+    "eng_target": "all the way",
+    "choices": [
+      "all the way",
+      "all the way at",
+      "all the way on"
+    ],
+    "translation": "彼は、はるばるプールまで歩かなければならなかった。",
+    "jp_target": "はるばる",
+    "word_count": 3
+  },
+  "1039": {
+    "id": 1039,
+    "idiom": "as 〜 as  A",
+    "meaning": "②  A と同じくらい〜",
+    "sentence": "I can run as fast as my older brother.",
+    "eng_target": "as fast as",
+    "choices": [
+      "as fast as",
+      "so fast as",
+      "too fast to"
+    ],
+    "translation": "僕は兄と同じくらい速く走れる。",
+    "jp_target": "と同じくらい",
+    "word_count": 2
+  },
+  "1040": {
+    "id": 1040,
+    "idiom": "as usual",
+    "meaning": "② いつものように",
+    "sentence": "He came late as usual.",
+    "eng_target": "as usual",
+    "choices": [
+      "as usual",
+      "as always",
+      "as common"
+    ],
+    "translation": "彼はいつものように遅刻してきた。",
+    "jp_target": "いつものように",
+    "word_count": 2
+  },
+  "1041": {
+    "id": 1041,
+    "idiom": "at last",
+    "meaning": "② やっと、ついに、とうとう",
+    "sentence": "I finished my homework at last!",
+    "eng_target": "at last",
+    "choices": [
+      "at last",
+      "at once",
+      "at least"
+    ],
+    "translation": "やっと宿題を終えたぞ！",
+    "jp_target": "やっと",
+    "word_count": 2
+  },
+  "1042": {
+    "id": 1042,
+    "idiom": "at the end of 〜",
+    "meaning": "④ 〜の終わりに、～の突き当りに",
+    "sentence": "Iris and John kiss at the end of the movie!",
+    "eng_target": "at the end of",
+    "choices": [
+      "at the end of",
+      "at the end to",
+      "at the end with"
+    ],
+    "translation": "アイリスとジョンは映画の最後でキスするの！",
+    "jp_target": "最後で",
+    "word_count": 4
+  },
+  "1043": {
+    "id": 1043,
+    "idiom": "*be*  back",
+    "meaning": "② 戻る",
+    "sentence": "I’ll be back.",
+    "eng_target": "be back",
+    "choices": [
+      "be back",
+      "be return",
+      "be again"
+    ],
+    "translation": "戻ってくるよ。",
+    "jp_target": "戻ってくるよ",
+    "word_count": 2
+  },
+  "1044": {
+    "id": 1044,
+    "idiom": "*be*  full of 〜",
+    "meaning": "③ 〜でいっぱいである",
+    "sentence": "The sky was full of stars.",
+    "eng_target": "full of",
+    "choices": [
+      "full of",
+      "full with",
+      "filled of"
+    ],
+    "translation": "空は星でいっぱいだった。",
+    "jp_target": "でいっぱいだった",
+    "word_count": 3
+  },
+  "1045": {
+    "id": 1045,
+    "idiom": "*be*  glad to  (原)",
+    "meaning": "③  (原) してうれしい",
+    "sentence": "I am glad to see you.",
+    "eng_target": "glad to",
+    "choices": [
+      "glad to",
+      "glad for",
+      "glad at"
+    ],
+    "translation": "会えてうれしいです。",
+    "jp_target": "会えてうれしいです",
+    "word_count": 3
+  },
+  "1046": {
+    "id": 1046,
+    "idiom": "*be*  in a hurry",
+    "meaning": "④ 急いでいる",
+    "sentence": "Are you in a hurry?",
+    "eng_target": "in a hurry",
+    "choices": [
+      "in a hurry",
+      "in a hurry to",
+      "in a hurry for"
+    ],
+    "translation": "お急ぎですか？",
+    "jp_target": "お急ぎですか",
+    "word_count": 4
+  },
+  "1047": {
+    "id": 1047,
+    "idiom": "*be*  interested in 〜",
+    "meaning": "④ 〜に興味がある",
+    "sentence": "He is interested in Japanese history.",
+    "eng_target": "interested in",
+    "choices": [
+      "interested in",
+      "interested for",
+      "interested with"
+    ],
+    "translation": "彼は日本史に興味がある。",
+    "jp_target": "興味がある",
+    "word_count": 3
+  },
+  "1048": {
+    "id": 1048,
+    "idiom": "*be*  kind to 〜",
+    "meaning": "③ 〜に親切である",
+    "sentence": "The new neighbour is very kind to us.",
+    "eng_target": "very kind to",
+    "choices": [
+      "very kind to",
+      "very kind for",
+      "very kind at"
+    ],
+    "translation": "新しいお隣さんは私たちにとても親切です。",
+    "jp_target": "親切です",
+    "word_count": 3
+  },
+  "1049": {
+    "id": 1049,
+    "idiom": "*be*  tired of  ～ing",
+    "meaning": "④ 〜するのに飽きている",
+    "sentence": "I’m tired of watching TV. Let’s do some exercise!",
+    "eng_target": "tired of watching",
+    "choices": [
+      "tired of watching",
+      "tired to watch",
+      "tired watch"
+    ],
+    "translation": "テレビを見るのに飽きたよ。ちょっと運動しよう！",
+    "jp_target": "見るのに飽きたよ",
+    "word_count": 3
+  },
+  "1050": {
+    "id": 1050,
+    "idiom": "cheer up  (人)",
+    "meaning": "②  (人) を元気づける",
+    "sentence": "I want to cheer up Katy.",
+    "eng_target": "cheer up Katy",
+    "choices": [
+      "cheer up Katy",
+      "cheer out Katy",
+      "cheer down Katy"
+    ],
+    "translation": "ケイティを元気づけたいな。",
+    "jp_target": "元気づけたいな",
+    "word_count": 2
+  },
+  "1051": {
+    "id": 1051,
+    "idiom": "come true",
+    "meaning": "② 実現する、本当になる",
+    "sentence": "Your dreams will come true.",
+    "eng_target": "come true",
+    "choices": [
+      "come true",
+      "come truly",
+      "come real"
+    ],
+    "translation": "あなたの夢はかなうでしょう。",
+    "jp_target": "かなうでしょう",
+    "word_count": 2
+  },
+  "1052": {
+    "id": 1052,
+    "idiom": "feel sick",
+    "meaning": "② 気分が悪い",
+    "sentence": "He felt sick, so he went home early.",
+    "eng_target": "felt sick",
+    "choices": [
+      "felt sick",
+      "felt sicken",
+      "felt bad"
+    ],
+    "translation": "彼は気分が悪かったので、早退しました。",
+    "jp_target": "気分が悪かった",
+    "word_count": 2
+  },
+  "1053": {
+    "id": 1053,
+    "idiom": "finish  ～ing",
+    "meaning": "② 〜し終える",
+    "sentence": "Have you finished reading the book?",
+    "eng_target": "finished reading",
+    "choices": [
+      "finished reading",
+      "finished to read",
+      "finished read"
+    ],
+    "translation": "その本を読み終えましたか？",
+    "jp_target": "読み終えましたか",
+    "word_count": 1
+  },
+  "1054": {
+    "id": 1054,
+    "idiom": "first of all",
+    "meaning": "③ まず第一に",
+    "sentence": "First of all, let me introduce myself.",
+    "eng_target": "First of all",
+    "choices": [
+      "First of all",
+      "First of once",
+      "First at all"
+    ],
+    "translation": "まず初めに、自己紹介をさせてください。",
+    "jp_target": "まず初めに",
+    "word_count": 3
+  },
+  "1055": {
+    "id": 1055,
+    "idiom": "for example",
+    "meaning": "② 例えば",
+    "sentence": "I like ball sports, for example tennis.",
+    "eng_target": "for example",
+    "choices": [
+      "for example",
+      "such as",
+      "for instances"
+    ],
+    "translation": "私は、例えばテニスのような球技が好きです。",
+    "jp_target": "例えば",
+    "word_count": 2
+  },
+  "1056": {
+    "id": 1056,
+    "idiom": "get angry",
+    "meaning": "② 怒る",
+    "sentence": "Lana got angry because I broke her cup.",
+    "eng_target": "got angry",
+    "choices": [
+      "got angry",
+      "got angrily",
+      "got mad"
+    ],
+    "translation": "私がカップを割ったので、ラナは怒った。",
+    "jp_target": "怒った",
+    "word_count": 2
+  },
+  "1057": {
+    "id": 1057,
+    "idiom": "get back to 〜",
+    "meaning": "③ ～に戻る",
+    "sentence": "Mike will get back to his office by 3 p.m..",
+    "eng_target": "get back to",
+    "choices": [
+      "get back to",
+      "get back for",
+      "get back at"
+    ],
+    "translation": "マイクは3時までには彼のオフィスに戻ってくるでしょう。",
+    "jp_target": "戻ってくるでしょう",
+    "word_count": 3
+  },
+  "1058": {
+    "id": 1058,
+    "idiom": "go on a trip",
+    "meaning": "④ 旅行に行く",
+    "sentence": "My grandparents went on a trip to Norway last year.",
+    "eng_target": "went on a trip to",
+    "choices": [
+      "went on a trip to",
+      "went on a trip for",
+      "went on a trip at"
+    ],
+    "translation": "私の祖父母は去年ノルウェーへ旅行に行った。",
+    "jp_target": "旅行に行った",
+    "word_count": 4
+  },
+  "1059": {
+    "id": 1059,
+    "idiom": "have a cold",
+    "meaning": "③ 風邪をひいている",
+    "sentence": "I have a cold and my nose is blocked.",
+    "eng_target": "have a cold",
+    "choices": [
+      "have a cold",
+      "take a cold",
+      "get a cold"
+    ],
+    "translation": "風邪をひいていて鼻が利かない。",
+    "jp_target": "風邪をひいていて",
+    "word_count": 3
+  },
+  "1060": {
+    "id": 1060,
+    "idiom": "have a stomachache",
+    "meaning": "③ 腹痛がする",
+    "sentence": "Naomi had a stomachache after she had raw food yesterday.",
+    "eng_target": "had a stomachache",
+    "choices": [
+      "had a stomachache",
+      "took a stomachache",
+      "got a stomachache"
+    ],
+    "translation": "昨夜生ものを食べた後、ナオミは腹痛がしました。",
+    "jp_target": "腹痛がしました",
+    "word_count": 3
+  },
+  "1061": {
+    "id": 1061,
+    "idiom": "help  (人) (原)",
+    "meaning": "④  (人) が (原) するのを手伝う",
+    "sentence": "I helped my mother wash the dishes after dinner.",
+    "eng_target": "helped my mother wash",
+    "choices": [
+      "helped my mother wash",
+      "helped my mother washing",
+      "helped my mother to wash"
+    ],
+    "translation": "夕食後、母がお皿を洗うのを手伝った。",
+    "jp_target": "洗うのを手伝った",
+    "word_count": 1
+  },
+  "1062": {
+    "id": 1062,
+    "idiom": "hundreds of 〜",
+    "meaning": "② 何百もの〜",
+    "sentence": "Hundreds of people were waiting outside the concert hall.",
+    "eng_target": "Hundreds of",
+    "choices": [
+      "Hundreds of",
+      "Hundreds for",
+      "Hundreds to"
+    ],
+    "translation": "コンサートホールの外には何百人もの人たちが待っていた。",
+    "jp_target": "何百人もの人たち",
+    "word_count": 2
+  },
+  "1063": {
+    "id": 1063,
+    "idiom": "in time",
+    "meaning": "② 間に合って",
+    "sentence": "I woke up late,but I made it in time.",
+    "eng_target": "in time",
+    "choices": [
+      "in time",
+      "on time",
+      "at time"
+    ],
+    "translation": "寝坊したけど、間に合うことができたよ。",
+    "jp_target": "間に合う",
+    "word_count": 2
+  },
+  "1064": {
+    "id": 1064,
+    "idiom": "introduce  A  to  B",
+    "meaning": "②  A を B に紹介する",
+    "sentence": "He introduced his best friend to us.",
+    "eng_target": "introduced his best friend to",
+    "choices": [
+      "introduced his best friend to",
+      "introduced his best friend for",
+      "introduced his best friend at"
+    ],
+    "translation": "彼は、親友を私たちに紹介した。",
+    "jp_target": "紹介した",
+    "word_count": 2
+  },
+  "1065": {
+    "id": 1065,
+    "idiom": "it takes  (人)  ～ to  (原)",
+    "meaning": "③  (人) が (原) するのに～(の時間が)かかる",
+    "sentence": "It took me a month to read this book.",
+    "eng_target": "took me a month to read",
+    "choices": [
+      "took me a month to read",
+      "took me a month reading",
+      "took me a month for read"
+    ],
+    "translation": "私がこの本を読むのにひと月かかった。",
+    "jp_target": "ひと月かかった",
+    "word_count": 3
+  },
+  "1066": {
+    "id": 1066,
+    "idiom": "keep  doing",
+    "meaning": "② ～し続ける",
+    "sentence": "Keep practicing if you want to win the game.",
+    "eng_target": "Keep practicing",
+    "choices": [
+      "Keep practicing",
+      "Keep to practice",
+      "Keep practice"
+    ],
+    "translation": "試合に勝ちたいなら練習し続けなさい。",
+    "jp_target": "練習し続けなさい",
+    "word_count": 2
+  },
+  "1067": {
+    "id": 1067,
+    "idiom": "look after 〜",
+    "meaning": "② 〜の世話をする",
+    "sentence": "Can you look after your little sister while I go to the bank?",
+    "eng_target": "look after",
+    "choices": [
+      "look after",
+      "look on",
+      "look for"
+    ],
+    "translation": "銀行に行っている間、妹の世話をしてくれる？",
+    "jp_target": "世話をしてくれる",
+    "word_count": 2
+  },
+  "1068": {
+    "id": 1068,
+    "idiom": "make a speech",
+    "meaning": "③ スピーチをする",
+    "sentence": "Owen made a speech in front of all the students.",
+    "eng_target": "made a speech",
+    "choices": [
+      "made a speech",
+      "took a speech",
+      "gave a speech"
+    ],
+    "translation": "オーエンは全生徒の前でスピーチをした。",
+    "jp_target": "スピーチをした",
+    "word_count": 3
+  },
+  "1069": {
+    "id": 1069,
+    "idiom": "no more 〜",
+    "meaning": "③ これ以上〜ない",
+    "sentence": "There are no more boxes in my house.",
+    "eng_target": "no more",
+    "choices": [
+      "no more",
+      "no any",
+      "no others"
+    ],
+    "translation": "うちにはこれ以上箱はないよ。",
+    "jp_target": "これ以上",
+    "word_count": 2
+  },
+  "1070": {
+    "id": 1070,
+    "idiom": "on foot",
+    "meaning": "② 歩いて",
+    "sentence": "Penelope goes to school on foot.",
+    "eng_target": "on foot",
+    "choices": [
+      "on foot",
+      "by foot",
+      "at foot"
+    ],
+    "translation": "ペネロペは歩いて学校に行く。",
+    "jp_target": "歩いて",
+    "word_count": 2
+  },
+  "1071": {
+    "id": 1071,
+    "idiom": "on  *one's*  way home",
+    "meaning": "④ 家に帰る途中で",
+    "sentence": "I’ll get something for dinner on my way home.",
+    "eng_target": "on my way home",
+    "choices": [
+      "on my way home",
+      "on my way to home",
+      "on my way home to"
+    ],
+    "translation": "家に帰る途中で何か夕飯になるものを買ってくるね。",
+    "jp_target": "途中で",
+    "word_count": 4
+  },
+  "1072": {
+    "id": 1072,
+    "idiom": "on  *one's*  way to 〜",
+    "meaning": "④ 〜へ行く途中で",
+    "sentence": "I often buy coffee on my way to the office.",
+    "eng_target": "on my way to",
+    "choices": [
+      "on my way to",
+      "on my way for",
+      "on my way at"
+    ],
+    "translation": "私はよく会社へ行く途中でコーヒーを買う。",
+    "jp_target": "途中で",
+    "word_count": 4
+  },
+  "1073": {
+    "id": 1073,
+    "idiom": "on time",
+    "meaning": "② 時間通りに",
+    "sentence": "The shinkansen arrived on time.",
+    "eng_target": "on time",
+    "choices": [
+      "on time",
+      "in time",
+      "at time"
+    ],
+    "translation": "その新幹線は時間通りに着いた。",
+    "jp_target": "時間通りに",
+    "word_count": 2
+  },
+  "1074": {
+    "id": 1074,
+    "idiom": "once a week/month",
+    "meaning": "③ 週に/月に 1回",
+    "sentence": "Ryan goes to cooking school once a week.",
+    "eng_target": "once a week",
+    "choices": [
+      "once a week",
+      "one time a week",
+      "once week"
+    ],
+    "translation": "ライアンは週に一回料理教室に通っている。",
+    "jp_target": "週に一回",
+    "word_count": 4
+  },
+  "1075": {
+    "id": 1075,
+    "idiom": "one of the [最上級] [複]",
+    "meaning": "③ 最も･･･のうちの1つ",
+    "sentence": "Kyoto is one of the most popular cities for tourists.",
+    "eng_target": "one of the most popular cities",
+    "choices": [
+      "one of the most popular cities",
+      "one of the most popular city",
+      "one of the most popular cities to"
+    ],
+    "translation": "京都は、旅行客に最も人気のある街の一つです。",
+    "jp_target": "最も人気のある街の一つ",
+    "word_count": 3
+  },
+  "1076": {
+    "id": 1076,
+    "idiom": "right away",
+    "meaning": "② すぐに",
+    "sentence": "Certainly, Sir. I’ll bring it right away.",
+    "eng_target": "right away",
+    "choices": [
+      "right away",
+      "right now",
+      "right here"
+    ],
+    "translation": "かしこまりました。すぐにそれをお持ちします。",
+    "jp_target": "すぐに",
+    "word_count": 2
+  },
+  "1077": {
+    "id": 1077,
+    "idiom": "right now",
+    "meaning": "② ちょうど今、すぐに",
+    "sentence": "I’m in class right now.",
+    "eng_target": "right now",
+    "choices": [
+      "right now",
+      "right away",
+      "right here"
+    ],
+    "translation": "ちょうど今授業中だよ。",
+    "jp_target": "ちょうど今",
+    "word_count": 2
+  },
+  "1078": {
+    "id": 1078,
+    "idiom": "see the/a doctor",
+    "meaning": "③ 医者に診てもらう",
+    "sentence": "I have an appointment to see a doctor.",
+    "eng_target": "see a doctor",
+    "choices": [
+      "see a doctor",
+      "meet a doctor",
+      "look a doctor"
+    ],
+    "translation": "お医者さんに診てもらう予約を取っています。",
+    "jp_target": "診てもらう",
+    "word_count": 4
+  },
+  "1079": {
+    "id": 1079,
+    "idiom": "show  (人)  how to  (原)",
+    "meaning": "③  (人) にどうやって (原) するか教える",
+    "sentence": "Let me show you how to do it.",
+    "eng_target": "how to",
+    "choices": [
+      "how to",
+      "how for",
+      "how of"
+    ],
+    "translation": "それをどうやってするのか教えるね。",
+    "jp_target": "どうやってするのか教えるね",
+    "word_count": 3
+  },
+  "1080": {
+    "id": 1080,
+    "idiom": "so 〜 that ...",
+    "meaning": "② とても〜なので…",
+    "sentence": "It’s so hot that I won’t go outside today!",
+    "eng_target": "so hot that",
+    "choices": [
+      "so hot that",
+      "too hot that",
+      "so hot that to"
+    ],
+    "translation": "とても暑いので<br>今日は一歩も外に出ないぞ。",
+    "jp_target": "とても暑いので",
+    "word_count": 2
+  },
+  "1081": {
+    "id": 1081,
+    "idiom": "something (形)  to  (原)",
+    "meaning": "② 何か (原) すべき (形) なもの",
+    "sentence": "I have something bad to tell you. Your bike is stolen.",
+    "eng_target": "something bad to",
+    "choices": [
+      "something bad to",
+      "something bad for",
+      "something bad to do"
+    ],
+    "translation": "あなたに話すべき悪いことがあるの。あなたの自転車が盗まれた。",
+    "jp_target": "話すべき悪いこと",
+    "word_count": 2
+  },
+  "1082": {
+    "id": 1082,
+    "idiom": "sound like 〜",
+    "meaning": "② 〜のように聞こえる",
+    "sentence": "That sounds like a great idea.",
+    "eng_target": "sounds like",
+    "choices": [
+      "sounds like",
+      "sounds of",
+      "sounds as"
+    ],
+    "translation": "それは素晴らしい考えのように聞こえるよ。",
+    "jp_target": "のように聞こえる",
+    "word_count": 2
+  },
+  "1083": {
+    "id": 1083,
+    "idiom": "such a 〜",
+    "meaning": "② そんなに～、こんなに～",
+    "sentence": "I have never had such a delicious champon.",
+    "eng_target": "such a",
+    "choices": [
+      "such a",
+      "so a",
+      "very a"
+    ],
+    "translation": "こんなにもおいしいちゃんぽんは食べたことがない。",
+    "jp_target": "こんなにも",
+    "word_count": 2
+  },
+  "1084": {
+    "id": 1084,
+    "idiom": "take a picture",
+    "meaning": "③ 写真を撮る",
+    "sentence": "He took many pictures during his trip.",
+    "eng_target": "took many pictures",
+    "choices": [
+      "took many pictures",
+      "made many pictures",
+      "took many photos"
+    ],
+    "translation": "彼は旅行中たくさんの写真を撮った。",
+    "jp_target": "写真を撮った",
+    "word_count": 3
+  },
+  "1085": {
+    "id": 1085,
+    "idiom": "take a shower",
+    "meaning": "③ シャワーを浴びる",
+    "sentence": "I was taking a  shower when you phoned me.",
+    "eng_target": "taking a shower",
+    "choices": [
+      "taking a shower",
+      "making a shower",
+      "taking a shower to"
+    ],
+    "translation": "あなたが電話を掛けてきたとき、私はシャワーを浴びていたよ。",
+    "jp_target": "シャワーを浴びていた",
+    "word_count": 3
+  },
+  "1086": {
+    "id": 1086,
+    "idiom": "take off 〜",
+    "meaning": "② （服など）を脱ぐ、離陸する",
+    "sentence": "The man took his hat when he entered the church.",
+    "eng_target": "take off 〜",
+    "choices": [
+      "take off 〜",
+      "take off 〜 to",
+      "take off 〜 for"
+    ],
+    "translation": "その男性は教会に入った時、帽子をとった。",
+    "jp_target": "その男",
+    "word_count": 2
+  },
+  "1087": {
+    "id": 1087,
+    "idiom": "the other day",
+    "meaning": "③ 先日",
+    "sentence": "I ate that the other day.",
+    "eng_target": "the other day",
+    "choices": [
+      "the other day",
+      "another day",
+      "the next day"
+    ],
+    "translation": "それ先日食べましたよ。",
+    "jp_target": "先日",
+    "word_count": 3
+  },
+  "1088": {
+    "id": 1088,
+    "idiom": "the same as 〜",
+    "meaning": "③ 〜と同じ",
+    "sentence": "My bag is the same as my sister’s.",
+    "eng_target": "the same as",
+    "choices": [
+      "the same as",
+      "the same with",
+      "the same to"
+    ],
+    "translation": "私のカバンは姉のとおんなじよ。",
+    "jp_target": "と同じ",
+    "word_count": 3
+  },
+  "1089": {
+    "id": 1089,
+    "idiom": "this way",
+    "meaning": "② こちらへ",
+    "sentence": "Please come this way.",
+    "eng_target": "this way",
+    "choices": [
+      "this way",
+      "that way",
+      "this road"
+    ],
+    "translation": "どうぞこちらへ来てください。",
+    "jp_target": "こちらへ",
+    "word_count": 2
+  },
+  "1090": {
+    "id": 1090,
+    "idiom": "thousands of 〜",
+    "meaning": "② 何千もの〜、たくさんの",
+    "sentence": "There are thousands of tall buildings in Tokyo.",
+    "eng_target": "thousands of",
+    "choices": [
+      "thousands of",
+      "thousands for",
+      "thousands to"
+    ],
+    "translation": "東京にはたくさんの背の高い建築物がある。",
+    "jp_target": "何千もの",
+    "word_count": 2
+  },
+  "1091": {
+    "id": 1091,
+    "idiom": "turn down 〜",
+    "meaning": "② （音など）を小さくする、断る",
+    "sentence": "Could you turn down the music, please?",
+    "eng_target": "turn down",
+    "choices": [
+      "turn down",
+      "turn out",
+      "turn up"
+    ],
+    "translation": "音楽の音量を下げてもらえませんか？",
+    "jp_target": "下げてもらえませんか",
+    "word_count": 2
+  },
+  "1092": {
+    "id": 1092,
+    "idiom": "a glass of 〜",
+    "meaning": "③ コップ1杯の〜",
+    "sentence": "Can I have a glass of milk?",
+    "eng_target": "a glass of",
+    "choices": [
+      "a glass of",
+      "a glass off",
+      "a cup of"
+    ],
+    "translation": "牛乳をコップ1杯もらえますか？",
+    "jp_target": "コップ1杯",
+    "word_count": 3
+  },
+  "1093": {
+    "id": 1093,
+    "idiom": "be covered with 〜",
+    "meaning": "③ 〜で覆われている",
+    "sentence": "THe sky is covered with dark clouds.",
+    "eng_target": "covered with",
+    "choices": [
+      "covered with",
+      "covered by",
+      "covered in"
+    ],
+    "translation": "空が黒い雲で覆われている。",
+    "jp_target": "覆われている",
+    "word_count": 3
+  },
+  "1094": {
+    "id": 1094,
+    "idiom": "be filled with 〜",
+    "meaning": "③ 〜で満たされている",
+    "sentence": "The place is filled with young people.",
+    "eng_target": "filled with",
+    "choices": [
+      "filled with",
+      "filled of",
+      "filled for"
+    ],
+    "translation": "その場所は若者たちでいっぱいだ。",
+    "jp_target": "いっぱいだ",
+    "word_count": 3
+  },
+  "1095": {
+    "id": 1095,
+    "idiom": "break  *one's* promise",
+    "meaning": "③ 約束を破る",
+    "sentence": "She broke her promise and didn’t show up.",
+    "eng_target": "broke her promise",
+    "choices": [
+      "broke her promise",
+      "broke her promise to",
+      "broke her promise for"
+    ],
+    "translation": "彼女は約束を破って姿をあらわさなかった。",
+    "jp_target": "約束を破って",
+    "word_count": 3
+  },
+  "1096": {
+    "id": 1096,
+    "idiom": "give  (人)  a hand",
+    "meaning": "③  (人) に手を貸す、 (人) を手伝う",
+    "sentence": "Could you give me a hand to move the table?",
+    "eng_target": "give me a hand",
+    "choices": [
+      "give me a hand",
+      "give me hands",
+      "give me a head"
+    ],
+    "translation": "そのテーブルを動かすのに手を貸してくれないかしら。",
+    "jp_target": "手を貸してくれないかしら",
+    "word_count": 3
+  },
+  "1097": {
+    "id": 1097,
+    "idiom": "give up",
+    "meaning": "② 諦める",
+    "sentence": "The game ends when you give up.",
+    "eng_target": "give up",
+    "choices": [
+      "give up",
+      "give down",
+      "give out"
+    ],
+    "translation": "諦めたらそこでおしまいですよ。",
+    "jp_target": "諦めたら",
+    "word_count": 2
+  },
+  "1098": {
+    "id": 1098,
+    "idiom": "have an interview with  (人)",
+    "meaning": "④  (人) と面談する、インタビューする",
+    "sentence": "I need to have an interview with your mother.",
+    "eng_target": "have an interview with",
+    "choices": [
+      "have an interview with",
+      "have an interview for",
+      "have an interview at"
+    ],
+    "translation": "あなたのお母さんと面談する必要があります。",
+    "jp_target": "面談する必要",
+    "word_count": 4
+  },
+  "1099": {
+    "id": 1099,
+    "idiom": "in fact",
+    "meaning": "② 実際は",
+    "sentence": "Tokyo Disney Land is in Chiba, in fact.",
+    "eng_target": "in fact",
+    "choices": [
+      "in fact",
+      "at fact",
+      "for fact"
+    ],
+    "translation": "東京ディズニーランドは実際は千葉にある。",
+    "jp_target": "実際は",
+    "word_count": 2
+  },
+  "1100": {
+    "id": 1100,
+    "idiom": "leave for ～",
+    "meaning": "② 〜に向けて出発する",
+    "sentence": "The ferry left for Fukue, Goto.",
+    "eng_target": "left for",
+    "choices": [
+      "left for",
+      "left to",
+      "left at"
+    ],
+    "translation": "そのフェリーは五島の福江に向けて出発した。",
+    "jp_target": "に向けて出発した",
+    "word_count": 2
+  },
+  "1101": {
+    "id": 1101,
+    "idiom": "a slice of ～",
+    "meaning": "③ 一切れの〜",
+    "sentence": "Ally put a slice of lemon into her tea.",
+    "eng_target": "slice of lemon",
+    "choices": [
+      "slice of lemon",
+      "slice of lemon to",
+      "slice of lemon for"
+    ],
+    "translation": "アリーは一切れのレモンを紅茶に入れた。",
+    "jp_target": "切れ",
+    "word_count": 3
+  },
+  "1102": {
+    "id": 1102,
+    "idiom": "agree with ～",
+    "meaning": "③ 〜に同意する",
+    "sentence": "If you don’t agree with me, please say so.",
+    "eng_target": "agree with",
+    "choices": [
+      "agree with",
+      "agree to",
+      "agree for"
+    ],
+    "translation": "もし私に同意できないなら、そう言ってください。",
+    "jp_target": "同意でき",
+    "word_count": 2
+  },
+  "1103": {
+    "id": 1103,
+    "idiom": "all the time ～",
+    "meaning": "③ いつも、～の間ずっと",
+    "sentence": "He never listens. He talks all the time.",
+    "eng_target": "all the time",
+    "choices": [
+      "all the time",
+      "all the for",
+      "all the to"
+    ],
+    "translation": "彼は全然人の話を聞かない。彼はいつもしゃべっている。",
+    "jp_target": "いつも",
+    "word_count": 3
+  },
+  "1104": {
+    "id": 1104,
+    "idiom": "as soon as possible",
+    "meaning": "④ できるだけ早く",
+    "sentence": "Please contact Ben as soon as possible.",
+    "eng_target": "as soon as possible",
+    "choices": [
+      "as soon as possible",
+      "as soon for possible",
+      "as soon to possible"
+    ],
+    "translation": "できるだけ早くベンと連絡を取ってください。",
+    "jp_target": "できるだけ早く",
+    "word_count": 4,
+    "fc_highlight": "as soon as possible"
+  },
+  "1105": {
+    "id": 1105,
+    "idiom": "ask  (人)  for ～",
+    "meaning": "②  (人) に～を求める",
+    "sentence": "He was asking you for help about the new project.",
+    "eng_target": "asking you for help",
+    "choices": [
+      "asking you for help",
+      "asking you to help",
+      "asking you at help"
+    ],
+    "translation": "彼は新しい企画について、あなたに助けを求めていましたよ。",
+    "jp_target": "助けを求めて",
+    "word_count": 2
+  },
+  "1106": {
+    "id": 1106,
+    "idiom": "be  absent from ～",
+    "meaning": "③ 〜を休んでいる",
+    "sentence": "He has been absent from school for three days.",
+    "eng_target": "absent from",
+    "choices": [
+      "absent from",
+      "absent to",
+      "absent for"
+    ],
+    "translation": "彼は3日間学校を休んでいます。",
+    "jp_target": "休んで",
+    "word_count": 3
+  },
+  "1107": {
+    "id": 1107,
+    "idiom": "be  careful about",
+    "meaning": "③ ～に気をつける",
+    "sentence": "You should be more careful about driving.",
+    "eng_target": "careful about",
+    "choices": [
+      "careful about",
+      "careful with",
+      "careful of"
+    ],
+    "translation": "君は車の運転にもっと気をつけるべきだ。",
+    "jp_target": "気をつける",
+    "word_count": 3
+  },
+  "1108": {
+    "id": 1108,
+    "idiom": "be  happy to  (原)",
+    "meaning": "③  (原) してうれしい",
+    "sentence": "I am happy to win the game.",
+    "eng_target": "happy to",
+    "choices": [
+      "happy to",
+      "happy for",
+      "happy of"
+    ],
+    "translation": "私はその試合に勝ててうれしい。",
+    "jp_target": "勝ててうれしい",
+    "word_count": 3,
+    "fc_highlight": "am happy to"
+  },
+  "1109": {
+    "id": 1109,
+    "idiom": "be  known as ～",
+    "meaning": "③ ～として知られている",
+    "sentence": "Fukuoka is known as the biggest city in Kyushu.",
+    "eng_target": "known as",
+    "choices": [
+      "known as",
+      "known to",
+      "known for"
+    ],
+    "translation": "福岡は九州で最も大きな街として知られている。",
+    "jp_target": "として知られている",
+    "word_count": 3
+  },
+  "1110": {
+    "id": 1110,
+    "idiom": "brush  one’s  teeth",
+    "meaning": "③ 歯を磨く",
+    "sentence": "Brush your teeth before going to bed.",
+    "eng_target": "Brush your teeth",
+    "choices": [
+      "Brush your teeth",
+      "Brush your tooths",
+      "Brush your toothe"
+    ],
+    "translation": "寝る前には歯を磨きなさい。",
+    "jp_target": "歯を磨き",
+    "word_count": 3
+  },
+  "1111": {
+    "id": 1111,
+    "idiom": "change  one’s  mind",
+    "meaning": "③ 気が変わる、考えを変える",
+    "sentence": "Cathy changed her mind and didn’t go to the party.",
+    "eng_target": "changed her mind",
+    "choices": [
+      "changed her mind",
+      "changed her to",
+      "changed her for"
+    ],
+    "translation": "キャシーは気が変わってそのパーティに行かなかった。",
+    "jp_target": "気が変わって",
+    "word_count": 3
+  },
+  "1112": {
+    "id": 1112,
+    "idiom": "day and night",
+    "meaning": "③ 昼も夜も",
+    "sentence": "The work continued day and night.",
+    "eng_target": "day and night",
+    "choices": [
+      "day and night",
+      "day to night",
+      "day for night"
+    ],
+    "translation": "その作業は昼も夜も続いた。",
+    "jp_target": "昼も夜も",
+    "word_count": 3
+  },
+  "1113": {
+    "id": 1113,
+    "idiom": "fall down",
+    "meaning": "② 転ぶ、倒れる",
+    "sentence": "I fell down when I was running to school.",
+    "eng_target": "fell down",
+    "choices": [
+      "fell down",
+      "fell up",
+      "fell off"
+    ],
+    "translation": "学校に走って行っていたときに転んだ。",
+    "jp_target": "転んだ",
+    "word_count": 2
+  },
+  "1114": {
+    "id": 1114,
+    "idiom": "feel better",
+    "meaning": "② 気分が良くなる",
+    "sentence": "I felt sick this morning, but I feel better now.",
+    "eng_target": "feel better",
+    "choices": [
+      "feel better",
+      "feel best",
+      "feel weller"
+    ],
+    "translation": "今朝は具合が悪かったけど、今は気分がいいよ。",
+    "jp_target": "気分がいい",
+    "word_count": 2,
+    "fc_highlight": "feel better"
+  },
+  "1115": {
+    "id": 1115,
+    "idiom": "feel like  ～ing",
+    "meaning": "③ ~したい気分である",
+    "sentence": "I feel like eating  sara udon  tonight.",
+    "eng_target": "eating",
+    "choices": [
+      "eating",
+      "to eat",
+      "eat"
+    ],
+    "translation": "今晩は皿うどんが食べたい気がする。",
+    "jp_target": "食べたい気がする",
+    "word_count": 2
+  },
+  "1116": {
+    "id": 1116,
+    "idiom": "for a long time",
+    "meaning": "③ 長い間",
+    "sentence": "I’ve wanted to buy this guitar for a long time!",
+    "eng_target": "for a long time",
+    "choices": [
+      "for a long time",
+      "to a long time",
+      "at a long time"
+    ],
+    "translation": "長い間このギターを買いたかったんだ！",
+    "jp_target": "長い間",
+    "word_count": 4
+  },
+  "1117": {
+    "id": 1117,
+    "idiom": "get better",
+    "meaning": "② 病気などが良くなる、上達する",
+    "sentence": "I hope you'll get better soon.",
+    "eng_target": "get better",
+    "choices": [
+      "get better",
+      "get best",
+      "get good"
+    ],
+    "translation": "あなたが早く良くなりますように。",
+    "jp_target": "良くなります",
+    "word_count": 2,
+    "fc_highlight": "get better"
+  },
+  "1118": {
+    "id": 1118,
+    "idiom": "get in trouble",
+    "meaning": "③ 面倒なことになる、トラブルに巻き込まれる",
+    "sentence": "Oh Daisuke, you’re going to get in trouble.",
+    "eng_target": "get in trouble",
+    "choices": [
+      "get in trouble",
+      "get on trouble",
+      "get at trouble"
+    ],
+    "translation": "ああダイスケ、面倒なことになるわ。",
+    "jp_target": "面倒なことになる",
+    "word_count": 3
+  },
+  "1119": {
+    "id": 1119,
+    "idiom": "get on ～",
+    "meaning": "② (乗り物)～に乗る",
+    "sentence": "Sorry, I’m late. I got on the wrong bus.",
+    "eng_target": "got on",
+    "choices": [
+      "got on",
+      "got in",
+      "got at"
+    ],
+    "translation": "遅れてごめん。違うバスに乗っちゃった。",
+    "jp_target": "乗っちゃった",
+    "word_count": 2
+  },
+  "1120": {
+    "id": 1120,
+    "idiom": "get  (人)  to  (原)",
+    "meaning": "④  (人) に (原) させる、 (人) に (原) してもらう",
+    "sentence": "My mother got my brother to clean the bathroom.",
+    "eng_target": "got my brother to",
+    "choices": [
+      "got my brother to",
+      "got my brother of",
+      "got my brother for"
+    ],
+    "translation": "母は弟にバスルームを掃除させた。",
+    "jp_target": "掃除させた",
+    "word_count": 2,
+    "fc_highlight": "got my brother to"
+  },
+  "1121": {
+    "id": 1121,
+    "idiom": "get together",
+    "meaning": "② 集まる",
+    "sentence": "Let’s get together next Sunday.",
+    "eng_target": "get together",
+    "choices": [
+      "get together",
+      "get to",
+      "get for"
+    ],
+    "translation": "今度の日曜に集まろうよ。",
+    "jp_target": "集まろう",
+    "word_count": 2
+  },
+  "1122": {
+    "id": 1122,
+    "idiom": "give  A  back to  B",
+    "meaning": "③  A を B に返す",
+    "sentence": "I gave your notebook to your sister yesterday.",
+    "eng_target": "notebook to your sister",
+    "choices": [
+      "notebook to your sister",
+      "notebook for your sister",
+      "notebook at your sister"
+    ],
+    "translation": "昨日君のノートを妹さんに返したよ。",
+    "jp_target": "返した",
+    "word_count": 3
+  },
+  "1123": {
+    "id": 1123,
+    "idiom": "go abroad",
+    "meaning": "② 海外へ行く",
+    "sentence": "My uncle often goes abroad on business.",
+    "eng_target": "goes abroad",
+    "choices": [
+      "goes abroad",
+      "goes in abroad",
+      "goes to abroad"
+    ],
+    "translation": "叔父さんは仕事でよく海外に行くよ。",
+    "jp_target": "海外に行く",
+    "word_count": 2
+  },
+  "1124": {
+    "id": 1124,
+    "idiom": "go for a walk",
+    "meaning": "④ 散歩に行く",
+    "sentence": "I went for a walk in the park yesterday.",
+    "eng_target": "went for a walk",
+    "choices": [
+      "went for a walk",
+      "went to a walk",
+      "went at a walk"
+    ],
+    "translation": "昨日、公園に散歩に行きました。",
+    "jp_target": "散歩に行きました",
+    "word_count": 4
+  },
+  "1125": {
+    "id": 1125,
+    "idiom": "go to see a movie",
+    "meaning": "⑤ 映画を見に行く",
+    "sentence": "I will go to see a movie, “Spiderman” tomorrow!",
+    "eng_target": "go to see a movie",
+    "choices": [
+      "go to see a movie",
+      "go to see movie",
+      "go to look a movie"
+    ],
+    "translation": "明日「スパイダーマン」の映画を見に行くんだ！",
+    "jp_target": "映画を見に行く",
+    "word_count": 5
+  },
+  "1126": {
+    "id": 1126,
+    "idiom": "graduate from ～",
+    "meaning": "② ～を卒業する",
+    "sentence": "She started to work as a scientist after graduating from the university.",
+    "eng_target": "graduating from",
+    "choices": [
+      "graduating from",
+      "graduating to",
+      "graduating at"
+    ],
+    "translation": "彼女は大学卒業後、科学者として働き始めた。",
+    "jp_target": "卒業後",
+    "word_count": 2,
+    "fc_highlight": "graduating from"
+  },
+  "1127": {
+    "id": 1127,
+    "idiom": "have a good memory",
+    "meaning": "④ 記憶力が良い",
+    "sentence": "She has a good memory. She remembers everything I said.",
+    "eng_target": "has a good memory",
+    "choices": [
+      "has a good memory",
+      "has a good memorize",
+      "has a good remember"
+    ],
+    "translation": "彼女は記憶力がいいよ。僕が言ったことなんでも覚えているんだ。",
+    "jp_target": "記憶力がいい",
+    "word_count": 4
+  },
+  "1128": {
+    "id": 1128,
+    "idiom": "have a great/good time",
+    "meaning": "④ 楽しい時間を過ごす",
+    "sentence": "I'm glad to hear you had a great time in Shimabara.",
+    "eng_target": "had a great time",
+    "choices": [
+      "had a great time",
+      "had a great to",
+      "had a great for"
+    ],
+    "translation": "皆さんが島原で楽しい時を過ごしたと聞いてうれしいです。",
+    "jp_target": "楽しい時を過ごした",
+    "word_count": 5
+  },
+  "1129": {
+    "id": 1129,
+    "idiom": "have been to ～",
+    "meaning": "③ ～にいったことがある",
+    "sentence": "Have you been to Hirado?",
+    "eng_target": "Have you been to",
+    "choices": [
+      "been to",
+      "been for",
+      "been at"
+    ],
+    "translation": "平戸に行ったことがありますか？",
+    "jp_target": "行ったことがありますか",
+    "word_count": 3
+  },
+  "1130": {
+    "id": 1130,
+    "idiom": "have enough  A  to  (原)",
+    "meaning": "③  (原) するのに十分な A がある",
+    "sentence": "We have enough eggs to make pudding.",
+    "eng_target": "enough eggs to",
+    "choices": [
+      "enough eggs to",
+      "enough eggs for",
+      "enough eggs to do"
+    ],
+    "translation": "プリンを作るのに十分な卵があります。",
+    "jp_target": "十分な卵があります",
+    "word_count": 3
+  },
+  "1131": {
+    "id": 1131,
+    "idiom": "hear of ～",
+    "meaning": "② ～のことを聞く",
+    "sentence": "Have you heard of Ellen’s marriage?",
+    "eng_target": "heard of",
+    "choices": [
+      "heard of",
+      "heard from",
+      "heard about"
+    ],
+    "translation": "エレンの結婚のこと聞いた？",
+    "jp_target": "聞いた",
+    "word_count": 2
+  },
+  "1132": {
+    "id": 1132,
+    "idiom": "in a minute",
+    "meaning": "③ すぐに",
+    "sentence": "I’ll be back in a minute.",
+    "eng_target": "in a minute",
+    "choices": [
+      "in a minute",
+      "to a minute",
+      "for a minute"
+    ],
+    "translation": "すぐに戻ります。",
+    "jp_target": "すぐに",
+    "word_count": 3
+  },
+  "1133": {
+    "id": 1133,
+    "idiom": "in those days",
+    "meaning": "③ その当時、あの頃は",
+    "sentence": "We were too young and foolish in those days.",
+    "eng_target": "in those days",
+    "choices": [
+      "in those days",
+      "at those days",
+      "on those days"
+    ],
+    "translation": "俺たちは当時「若すぎてバカだった。",
+    "jp_target": "当時",
+    "word_count": 3
+  },
+  "1134": {
+    "id": 1134,
+    "idiom": "look around ～",
+    "meaning": "② ～を見て回る、～の辺りを見回す",
+    "sentence": "I didn’t have time to look around the town.",
+    "eng_target": "look around",
+    "choices": [
+      "look around",
+      "look about",
+      "look around to"
+    ],
+    "translation": "その町を見て回る時間がなかった。",
+    "jp_target": "見て回る時間",
+    "word_count": 2
+  },
+  "1135": {
+    "id": 1135,
+    "idiom": "look well",
+    "meaning": "② 元気そうに見える",
+    "sentence": "You look well today!  What happened?",
+    "eng_target": "look well",
+    "choices": [
+      "look well",
+      "look good",
+      "look fine"
+    ],
+    "translation": "今日は元気そうね。何かあった？",
+    "jp_target": "元気そう",
+    "word_count": 2
+  },
+  "1136": {
+    "id": 1136,
+    "idiom": "make  A  from  B",
+    "meaning": "②  A を B から作る",
+    "sentence": "Wine is made from grapes.",
+    "eng_target": "made from",
+    "choices": [
+      "made from",
+      "made of",
+      "made by"
+    ],
+    "translation": "ワインはブドウから作られる。",
+    "jp_target": "から作られる",
+    "word_count": 2
+  },
+  "1137": {
+    "id": 1137,
+    "idiom": "name  A  after  B",
+    "meaning": "②  B にちなんで A に名前をつける",
+    "sentence": "The newborn baby was named after her grandmother.",
+    "eng_target": "named after",
+    "choices": [
+      "named after",
+      "named for",
+      "named behind"
+    ],
+    "translation": "その生まれたての赤ちゃんは、おばあさんにちなんで名前をつけられた。",
+    "jp_target": "にちなんで名前をつけられた",
+    "word_count": 2
+  },
+  "1138": {
+    "id": 1138,
+    "idiom": "on  one’s  first day",
+    "meaning": "④ 初日に",
+    "sentence": "Frank was late for his first day of work.",
+    "eng_target": "first day",
+    "choices": [
+      "first day",
+      "first to",
+      "first for"
+    ],
+    "translation": "フランクは仕事の初日に遅刻した。",
+    "jp_target": "初日に",
+    "word_count": 4
+  },
+  "1139": {
+    "id": 1139,
+    "idiom": "on  one’s  right",
+    "meaning": "③ (〜の)右側に",
+    "sentence": "The mountain on your right is Taradake mountain.",
+    "eng_target": "on your right",
+    "choices": [
+      "on your right",
+      "in your right",
+      "at your right"
+    ],
+    "translation": "右側にございます山は多良岳です。",
+    "jp_target": "右側に",
+    "word_count": 3
+  },
+  "1140": {
+    "id": 1140,
+    "idiom": "on sale",
+    "meaning": "② 売りに出されて、特売で",
+    "sentence": "The tickets are on sale now.",
+    "eng_target": "on sale",
+    "choices": [
+      "on sale",
+      "in sale",
+      "at sale"
+    ],
+    "translation": "チケットは只今発売中です。",
+    "jp_target": "特売で",
+    "word_count": 2
+  },
+  "1141": {
+    "id": 1141,
+    "idiom": "pick up ～",
+    "meaning": "② ～を拾い上げる、～を手にとる",
+    "sentence": "I picked up an earphone on the street.",
+    "eng_target": "picked up",
+    "choices": [
+      "picked up",
+      "picked down",
+      "picked off"
+    ],
+    "translation": "通りでイヤフォンを拾った。",
+    "jp_target": "拾った",
+    "word_count": 2
+  },
+  "1142": {
+    "id": 1142,
+    "idiom": "play catch",
+    "meaning": "② キャッチボールをする",
+    "sentence": "“I played catch with Otani yesterday.\" “Where??” “In my dream.”",
+    "eng_target": "catch",
+    "choices": [
+      "catch",
+      "cat",
+      "catching"
+    ],
+    "translation": "「大谷と昨日キャッチボールした」「マジか?」「夢の中で」",
+    "jp_target": "キャッチボールした",
+    "word_count": 2,
+    "fc_highlight": "played catch"
+  },
+  "1143": {
+    "id": 1143,
+    "idiom": "receive a prize",
+    "meaning": "③ 賞を獲る、受賞する",
+    "sentence": "She received the first prize in the speech contest.",
+    "eng_target": "received the first prize",
+    "choices": [
+      "received the first prize",
+      "received the first price",
+      "received the first pride"
+    ],
+    "translation": "彼女はスピーチコンテストで1等賞を獲った。",
+    "jp_target": "賞を獲った",
+    "word_count": 3
+  },
+  "1144": {
+    "id": 1144,
+    "idiom": "save money",
+    "meaning": "② お金を貯める、節約する",
+    "sentence": "I have to save money to go to Paris!",
+    "eng_target": "save money",
+    "choices": [
+      "save money",
+      "save cash",
+      "save gold"
+    ],
+    "translation": "パリに行くために節約しちゃおう！",
+    "jp_target": "節約しちゃおう",
+    "word_count": 2
+  },
+  "1145": {
+    "id": 1145,
+    "idiom": "say goodbye to  A",
+    "meaning": "③ Aにさようならを言う",
+    "sentence": "Gina left the room without saying goodbye to us.",
+    "eng_target": "saying goodbye to us",
+    "choices": [
+      "saying goodbye to us",
+      "saying goodbye for us",
+      "saying goodbye at us"
+    ],
+    "translation": "ジーナは私たちにさよならも言わずに部屋を出た。",
+    "jp_target": "さよならも言わずに",
+    "word_count": 3
+  },
+  "1146": {
+    "id": 1146,
+    "idiom": "say hello to  A",
+    "meaning": "③ Aによろしくと伝える",
+    "sentence": "I can’t go with you.  Please say hello to grandpa for me.",
+    "eng_target": "say hello to",
+    "choices": [
+      "say hello to",
+      "say hello for",
+      "say hello at"
+    ],
+    "translation": "いっしょに行けないよ。ぼくの代わりにおじいちゃんによろしく言っといてね。",
+    "jp_target": "よろしく言っといて",
+    "word_count": 3
+  },
+  "1147": {
+    "id": 1147,
+    "idiom": "show  A  around ～",
+    "meaning": "② Aに～を案内する",
+    "sentence": "I will show you around Nagasaki.",
+    "eng_target": "show you around",
+    "choices": [
+      "show you around",
+      "show you to",
+      "show you for"
+    ],
+    "translation": "あなたに長崎を案内するヨ。",
+    "jp_target": "案内する",
+    "word_count": 2
+  },
+  "1148": {
+    "id": 1148,
+    "idiom": "slow down",
+    "meaning": "② 速度を落とす",
+    "sentence": "The train slowed down and stopped.",
+    "eng_target": "down",
+    "choices": [
+      "down",
+      "up",
+      "off"
+    ],
+    "translation": "その列車は速度を落として止まった。",
+    "jp_target": "速度を落として",
+    "word_count": 2,
+    "fc_highlight": "slowed down"
+  },
+  "1149": {
+    "id": 1149,
+    "idiom": "take place",
+    "meaning": "② 行われる、起こる",
+    "sentence": "This festival takes place every summer.",
+    "eng_target": "takes place",
+    "choices": [
+      "takes place",
+      "takes room",
+      "takes time"
+    ],
+    "translation": "このお祭りは毎年夏に行われる。",
+    "jp_target": "行われる",
+    "word_count": 2
+  },
+  "1150": {
+    "id": 1150,
+    "idiom": "talk to  oneself",
+    "meaning": "③ ひとりごとを言う",
+    "sentence": "I didn’t notice that I was talking to myself.",
+    "eng_target": "talking to myself",
+    "choices": [
+      "talking to myself",
+      "talking for myself",
+      "talking at myself"
+    ],
+    "translation": "自分がひとりごとを言ってたなんて気づかなかった。",
+    "jp_target": "ひとりごとを言ってた",
+    "word_count": 3
+  },
+  "1151": {
+    "id": 1151,
+    "idiom": "thanks to ～",
+    "meaning": "② ～のおかげで、～のせいで",
+    "sentence": "I could write a good report thanks to your help.",
+    "eng_target": "thanks to",
+    "choices": [
+      "thanks to",
+      "thanks for",
+      "thanks of"
+    ],
+    "translation": "あなたの手伝いのおかげで良いレポートが書けたよ。",
+    "jp_target": "おかげで",
+    "word_count": 2
+  },
+  "1152": {
+    "id": 1152,
+    "idiom": "think of ～",
+    "meaning": "② 〜のことを思いつく、〜のことを考える",
+    "sentence": "Harry thought of a good idea while talking with Megan.",
+    "eng_target": "thought of",
+    "choices": [
+      "thought of",
+      "thought to",
+      "thought for"
+    ],
+    "translation": "ハリーはめーがんと話している間に良い考えを思いついた。",
+    "jp_target": "思いついた",
+    "word_count": 2
+  },
+  "1153": {
+    "id": 1153,
+    "idiom": "this is one’s  first time to  (原)",
+    "meaning": "⑤ 人にとって(原)するのは初めてである",
+    "sentence": "Is this your first time to drink tapioca tea?",
+    "eng_target": "first time to",
+    "choices": [
+      "first time to",
+      "first time for",
+      "first time at"
+    ],
+    "translation": "あなたにとってタピオカティーを飲むのは初めてですか？",
+    "jp_target": "初めてですか",
+    "word_count": 6
+  },
+  "1154": {
+    "id": 1154,
+    "idiom": "turn left",
+    "meaning": "② 左に曲がる",
+    "sentence": "Please turn left at the second traffic light.",
+    "eng_target": "turn left",
+    "choices": [
+      "turn left",
+      "turn right",
+      "turn left to"
+    ],
+    "translation": "2番目の信号機のところで左に曲がってください。",
+    "jp_target": "左に曲がって",
+    "word_count": 2
+  },
+  "1155": {
+    "id": 1155,
+    "idiom": "turn on ～",
+    "meaning": "② 〜をつける、スイッチを入れる",
+    "sentence": "Will you turn on the heater? It’s freezing outside!",
+    "eng_target": "turn on",
+    "choices": [
+      "turn on",
+      "turn off",
+      "turn up"
+    ],
+    "translation": "ヒーターをつけてくれませんか？外は凍えるほど寒いです。",
+    "jp_target": "つけてくれませんか",
+    "word_count": 2
+  },
+  "1156": {
+    "id": 1156,
+    "idiom": "visit  (人)  in the hospital",
+    "meaning": "④ 病院に(人)の見舞いに行く",
+    "sentence": "I visited my great grandmother in the hospital.",
+    "eng_target": "visited my great grandmother in the hospital",
+    "choices": [
+      "visited my great grandmother in the hospital",
+      "visited my great grandmother in hospital",
+      "visited my great grandmother to the hospital"
+    ],
+    "translation": "病院にひいおばあちゃんのお見舞いに行った。",
+    "jp_target": "見舞いに行った",
+    "word_count": 4
+  },
+  "1157": {
+    "id": 1157,
+    "idiom": "would love to  (原)",
+    "meaning": "③ ぜひ(原)したい",
+    "sentence": "We would love to do volunteer work in Kumamoto.",
+    "eng_target": "would love to",
+    "choices": [
+      "would love to",
+      "would love for",
+      "would love at"
+    ],
+    "translation": "熊本でぜひボランティア活動をしたい。",
+    "jp_target": "ぜひボランティア活動をしたい",
+    "word_count": 3
+  },
+  "1158": {
+    "id": 1158,
+    "idiom": "a couple of ～",
+    "meaning": "③ 2、3の～",
+    "sentence": "We are going to stay there for a couple of days.",
+    "eng_target": "couple of",
+    "choices": [
+      "couple of",
+      "couple off",
+      "couple to"
+    ],
+    "translation": "2、3日はそこに滞在する予定です。",
+    "jp_target": "2、3日",
+    "word_count": 3
+  },
+  "1159": {
+    "id": 1159,
+    "idiom": "a friend of mine",
+    "meaning": "④ 私の友達の一人",
+    "sentence": "Jennie is a friend of mine.",
+    "eng_target": "friend of mine",
+    "choices": [
+      "friend of mine",
+      "friend of me",
+      "friend of my"
+    ],
+    "translation": "ジェニーは私の友だちの一人です。",
+    "jp_target": "友だちの一人",
+    "word_count": 4
+  },
+  "1160": {
+    "id": 1160,
+    "idiom": "after a while",
+    "meaning": "③ しばらくして",
+    "sentence": "After a while, it started to rain.",
+    "eng_target": "After a while",
+    "choices": [
+      "after a while",
+      "after a time",
+      "after a moment"
+    ],
+    "translation": "しばらくして、雨が降り出した。",
+    "jp_target": "しばらくして",
+    "word_count": 3
+  },
+  "1161": {
+    "id": 1161,
+    "idiom": "as soon as ･･･",
+    "meaning": "③ ･･･するとすぐに",
+    "sentence": "Please leave a message and I will call you back as soon as I can.",
+    "eng_target": "as soon as",
+    "choices": [
+      "as soon as",
+      "as soon for",
+      "as soon to"
+    ],
+    "translation": "伝言を残して下さい、そうすればできるだけ早く折り返し連絡をします。",
+    "jp_target": "するとすぐに",
+    "word_count": 3
+  },
+  "1162": {
+    "id": 1162,
+    "idiom": "at least",
+    "meaning": "② 少なくとも",
+    "sentence": "I collected at least 1500 stickers.",
+    "eng_target": "at least",
+    "choices": [
+      "at least",
+      "to least",
+      "for least"
+    ],
+    "translation": "私は少なくとも1500枚のシールを集めた。",
+    "jp_target": "少なくとも",
+    "word_count": 2
+  },
+  "1163": {
+    "id": 1163,
+    "idiom": "at once",
+    "meaning": "② すぐに",
+    "sentence": "You had better do it at once.",
+    "eng_target": "at once",
+    "choices": [
+      "at once",
+      "to once",
+      "for once"
+    ],
+    "translation": "すぐにそれをやりなさい。",
+    "jp_target": "すぐに",
+    "word_count": 2,
+    "fc_highlight": "at once"
+  },
+  "1164": {
+    "id": 1164,
+    "idiom": "be  scared of ～",
+    "meaning": "③ ～を怖がる、～が怖い",
+    "sentence": "Irene cannot swim because she is scared of water.",
+    "eng_target": "scared of",
+    "choices": [
+      "scared of",
+      "scared for",
+      "scared with"
+    ],
+    "translation": "アイリーンは水が怖いので泳げない。",
+    "jp_target": "怖い",
+    "word_count": 3
+  },
+  "1165": {
+    "id": 1165,
+    "idiom": "be  similar to ～",
+    "meaning": "③ ～と似ている",
+    "sentence": "His ideas are similar to yours.",
+    "eng_target": "similar to",
+    "choices": [
+      "similar to",
+      "similar with",
+      "similar of"
+    ],
+    "translation": "彼の考えは君の考えに似ている。",
+    "jp_target": "似ている",
+    "word_count": 3
+  },
+  "1166": {
+    "id": 1166,
+    "idiom": "belong to ～",
+    "meaning": "② ～に所属している",
+    "sentence": "My parents both belonged to the chorus club when they were high school students.",
+    "eng_target": "belonged to",
+    "choices": [
+      "belonged to",
+      "belonged for",
+      "belonged at"
+    ],
+    "translation": "私の両親は二人とも高校生の時にコーラス部に入っていた。",
+    "jp_target": "入っていた",
+    "word_count": 2
+  },
+  "1167": {
+    "id": 1167,
+    "idiom": "by the way",
+    "meaning": "③ ところで",
+    "sentence": "By the way, how was your test today?",
+    "eng_target": "By the way",
+    "choices": [
+      "By the way",
+      "To the way",
+      "For the way"
+    ],
+    "translation": "ところで今日のテストはどうだった？",
+    "jp_target": "ところで",
+    "word_count": 3
+  },
+  "1168": {
+    "id": 1168,
+    "idiom": "call  A  back",
+    "meaning": "② Aに折り返し電話をする",
+    "sentence": "I am busy now, so I will call you back in 30 mins.",
+    "eng_target": "call you back",
+    "choices": [
+      "call you back",
+      "call you to",
+      "call you for"
+    ],
+    "translation": "今忙しいから、30分以内に折り返し電話するね。",
+    "jp_target": "折り返し電話する",
+    "word_count": 2
+  },
+  "1169": {
+    "id": 1169,
+    "idiom": "care about ～",
+    "meaning": "② 〜を気づかう、気にかける、気にする",
+    "sentence": "I don’t care about gossip.",
+    "eng_target": "care about",
+    "choices": [
+      "care about",
+      "care with",
+      "care for"
+    ],
+    "translation": "うわさなんて気にしない。",
+    "jp_target": "気にしない",
+    "word_count": 2
+  },
+  "1170": {
+    "id": 1170,
+    "idiom": "change trains",
+    "meaning": "② 列車を乗り換える",
+    "sentence": "Get off at the next station and change trains.",
+    "eng_target": "change trains",
+    "choices": [
+      "change trains",
+      "change to trains",
+      "change train"
+    ],
+    "translation": "次の駅で降りて、列車を乗り換えてください。",
+    "jp_target": "乗り換えて",
+    "word_count": 2
+  },
+  "1171": {
+    "id": 1171,
+    "idiom": "clean up ～",
+    "meaning": "② 〜を掃除する",
+    "sentence": "We have to clean up the room before Mother comes home!",
+    "eng_target": "clean up",
+    "choices": [
+      "clean up",
+      "clean down",
+      "clean out"
+    ],
+    "translation": "お母さんが返ってくる前に部屋を掃除しないと！",
+    "jp_target": "掃除しないと",
+    "word_count": 2
+  },
+  "1172": {
+    "id": 1172,
+    "idiom": "depend on ～",
+    "meaning": "② ～次第である、～に頼る",
+    "sentence": "Jack’s answer always depends on his mood.",
+    "eng_target": "depends on",
+    "choices": [
+      "depends on",
+      "depends in",
+      "depends at"
+    ],
+    "translation": "ジャックの答えはいつも彼の気分次第だ。",
+    "jp_target": "次第だ",
+    "word_count": 2
+  },
+  "1173": {
+    "id": 1173,
+    "idiom": "either  A  or  B",
+    "meaning": "② AかBのどちらか",
+    "sentence": "You can choose either chicken or fish for your main dish.",
+    "eng_target": "either chicken or fish",
+    "choices": [
+      "either chicken or fish",
+      "either chicken and fish",
+      "either chicken with fish"
+    ],
+    "translation": "メイン料理としてチキンか魚が選べます。",
+    "jp_target": "どちらか",
+    "word_count": 2,
+    "fc_highlight": "either chicken or fish"
+  },
+  "1174": {
+    "id": 1174,
+    "idiom": "exchange  A  for  B",
+    "meaning": "② AをBと交換する",
+    "sentence": "The shirt I bought was too big. Can I exchange it for a smaller one?",
+    "eng_target": "exchange it for",
+    "choices": [
+      "exchange it for",
+      "exchange it to",
+      "exchange it at"
+    ],
+    "translation": "私が買ったシャツは大きすぎました。それを小さいものと交換できますか？",
+    "jp_target": "交換できますか",
+    "word_count": 2
+  },
+  "1175": {
+    "id": 1175,
+    "idiom": "for a while",
+    "meaning": "③ しばらくの間",
+    "sentence": "I haven’t seen you for a while.",
+    "eng_target": "for a while",
+    "choices": [
+      "for a while",
+      "to a while",
+      "at a while"
+    ],
+    "translation": "しばらくの間、お会いしませんでしたね。",
+    "jp_target": "しばらくの間",
+    "word_count": 3
+  },
+  "1176": {
+    "id": 1176,
+    "idiom": "for fun",
+    "meaning": "② 楽しみで",
+    "sentence": "Kitty does muscle training for fun.",
+    "eng_target": "for fun",
+    "choices": [
+      "for fun",
+      "to fun",
+      "at fun"
+    ],
+    "translation": "キティは筋トレを楽しみで(趣味で)やっている。",
+    "jp_target": "楽しみで",
+    "word_count": 2
+  },
+  "1177": {
+    "id": 1177,
+    "idiom": "get a good grade on ～",
+    "meaning": "⑤ ～で良い成績をとる",
+    "sentence": "She got a good grade on a science test.",
+    "eng_target": "got a good grade on",
+    "choices": [
+      "got a good grade on",
+      "got a good grade in",
+      "got a good grade at"
+    ],
+    "translation": "彼女は理科のテストで良い成績をとった。",
+    "jp_target": "良い成績をとった",
+    "word_count": 5
+  },
+  "1178": {
+    "id": 1178,
+    "idiom": "get away from ～",
+    "meaning": "③ ～から逃げる",
+    "sentence": "All the people got away from the flood safely.",
+    "eng_target": "got away from",
+    "choices": [
+      "got away from",
+      "got away to",
+      "got away for"
+    ],
+    "translation": "すべての人が無事に洪水から逃げた。",
+    "jp_target": "逃げた",
+    "word_count": 3,
+    "fc_highlight": "got away from"
+  },
+  "1179": {
+    "id": 1179,
+    "idiom": "get in ～",
+    "meaning": "② ～に乗り込む、～に入る",
+    "sentence": "Ahhh! Something got in my eye!",
+    "eng_target": "got in",
+    "choices": [
+      "got in",
+      "got on",
+      "got into"
+    ],
+    "translation": "ああっ！何か目に入った！",
+    "jp_target": "入った",
+    "word_count": 2
+  },
+  "1180": {
+    "id": 1180,
+    "idiom": "have a fight",
+    "meaning": "③ けんかをする",
+    "sentence": "My sister and I had a fight last week, and we haven’t talked since then.",
+    "eng_target": "had a fight",
+    "choices": [
+      "had a fight",
+      "had a battle",
+      "had a war"
+    ],
+    "translation": "姉と私は先週けんかして、それからずっと話していない。",
+    "jp_target": "けんかして",
+    "word_count": 3
+  },
+  "1181": {
+    "id": 1181,
+    "idiom": "hear from ～",
+    "meaning": "② ～から連絡をもらう",
+    "sentence": "I hope to hear from you soon.",
+    "eng_target": "hear from",
+    "choices": [
+      "hear from",
+      "hear of",
+      "hear about"
+    ],
+    "translation": "すぐにあなたから連絡をもらえたらと思います。",
+    "jp_target": "連絡をもらえたら",
+    "word_count": 2
+  },
+  "1182": {
+    "id": 1182,
+    "idiom": "instead of ～",
+    "meaning": "② ～のかわりに",
+    "sentence": "We ordered hamburger sets instead of pizza sets.",
+    "eng_target": "instead of",
+    "choices": [
+      "instead of",
+      "instead to",
+      "instead for"
+    ],
+    "translation": "ぼくたちはピザセットのかわりにハンバーガーセットを注文した。",
+    "jp_target": "かわりに",
+    "word_count": 2
+  },
+  "1183": {
+    "id": 1183,
+    "idiom": "It is ～ for  (人)  to  (原) ･･･.",
+    "meaning": "④ (人)にとって(原)するのは～である",
+    "sentence": "It is difficult for me to finish reading this book.",
+    "eng_target": "difficult for me to",
+    "choices": [
+      "difficult for me to",
+      "difficult for me for",
+      "difficult for me to do"
+    ],
+    "translation": "私にとってこの本を読み終えるのは難しい。",
+    "jp_target": "するのは〜である",
+    "word_count": 4
+  },
+  "1184": {
+    "id": 1184,
+    "idiom": "keep in touch with  (人)",
+    "meaning": "④ (人)と連絡を取り続ける",
+    "sentence": "I keep in touch with my friend since nursery school.",
+    "eng_target": "keep in touch with",
+    "choices": [
+      "keep in touch with",
+      "keep in touch to",
+      "keep in touch at"
+    ],
+    "translation": "保育園のときからの友達と連絡を取り続けています。",
+    "jp_target": "連絡を取り続けています",
+    "word_count": 4
+  },
+  "1185": {
+    "id": 1185,
+    "idiom": "laugh at ～",
+    "meaning": "② ～を聞いて笑う",
+    "sentence": "Everyone laughed at Leo’s funny story.",
+    "eng_target": "laughed at",
+    "choices": [
+      "laughed at",
+      "laughed in",
+      "laughed with"
+    ],
+    "translation": "レオの面白い話を聞いて、みんな笑った。",
+    "jp_target": "笑った",
+    "word_count": 2
+  },
+  "1186": {
+    "id": 1186,
+    "idiom": "leave a message for  (人)",
+    "meaning": "④ (人)に伝言を残す",
+    "sentence": "Can I leave a message for Mr. McDonald?",
+    "eng_target": "leave a message for",
+    "choices": [
+      "leave a message for",
+      "leave a message to",
+      "leave a message at"
+    ],
+    "translation": "マクドナルド先生への伝言を残せますか？",
+    "jp_target": "伝言を残せますか",
+    "word_count": 4
+  },
+  "1187": {
+    "id": 1187,
+    "idiom": "less than ～",
+    "meaning": "② ～より少ない",
+    "sentence": "Yay!! Homework today was less than normal!",
+    "eng_target": "less than",
+    "choices": [
+      "less than",
+      "less to",
+      "less for"
+    ],
+    "translation": "やったね!! 今日の宿題はいつもより少ない!",
+    "jp_target": "より少ない",
+    "word_count": 2
+  },
+  "1188": {
+    "id": 1188,
+    "idiom": "lose  one’s  way",
+    "meaning": "③ 道に迷う",
+    "sentence": "We have completely lost our way.",
+    "eng_target": "lost our way",
+    "choices": [
+      "lost our way",
+      "lost our ways",
+      "lost our road"
+    ],
+    "translation": "私たちは完璧に道に迷った。",
+    "jp_target": "道に迷った",
+    "word_count": 3
+  },
+  "1189": {
+    "id": 1189,
+    "idiom": "make a mistake",
+    "meaning": "③ 間違える",
+    "sentence": "I made a mistake on the English writing test.",
+    "eng_target": "made a mistake",
+    "choices": [
+      "made a mistake",
+      "made a mistake to",
+      "made a mistake for"
+    ],
+    "translation": "英語のライティングテストで間違えた。",
+    "jp_target": "間違えた",
+    "word_count": 3,
+    "fc_highlight": "made a mistake"
+  },
+  "1190": {
+    "id": 1190,
+    "idiom": "make money",
+    "meaning": "② お金を稼ぐ",
+    "sentence": "Nathan worked so hard to make money for his new car.",
+    "eng_target": "make money",
+    "choices": [
+      "make money",
+      "make cash",
+      "make coins"
+    ],
+    "translation": "ネイサンは新しい車のお金を稼ぐために一生懸命に働いた。",
+    "jp_target": "稼ぐため",
+    "word_count": 2
+  },
+  "1191": {
+    "id": 1191,
+    "idiom": "not  A  but  B",
+    "meaning": "② AではなくB",
+    "sentence": "My dog is not a Shiba but a Chihuahua.",
+    "eng_target": "not a Shiba but",
+    "choices": [
+      "not a Shiba but a Chihuahua",
+      "not a Shiba but Chihuahua",
+      "not a Shiba only a Chihuahua"
+    ],
+    "translation": "私の犬は柴犬じゃなくてチワワです。",
+    "jp_target": "じゃなくて",
+    "word_count": 2
+  },
+  "1192": {
+    "id": 1192,
+    "idiom": "on the other hand",
+    "meaning": "④ 一方では",
+    "sentence": "Oliver is clever, but on the other hand he often makes careless mistakes.",
+    "eng_target": "on the other hand",
+    "choices": [
+      "on the other hand",
+      "on another hand",
+      "on different hand"
+    ],
+    "translation": "オリバーは頭はよいが、一方でよく不注意な間違いをする。",
+    "jp_target": "一方で",
+    "word_count": 4
+  },
+  "1193": {
+    "id": 1193,
+    "idiom": "so many ～",
+    "meaning": "② とてもたくさんの～",
+    "sentence": "I have so many questions to ask you.",
+    "eng_target": "so many",
+    "choices": [
+      "so many",
+      "so much",
+      "so very"
+    ],
+    "translation": "あなたに聞きたいことがたくさんあります。",
+    "jp_target": "たくさんあります",
+    "word_count": 2
+  },
+  "1194": {
+    "id": 1194,
+    "idiom": "take a break",
+    "meaning": "③ 休憩をとる",
+    "sentence": "It’s already 3 o’clock, let’s take a break.",
+    "eng_target": "take a break",
+    "choices": [
+      "take a break",
+      "take a break to",
+      "take a breaking"
+    ],
+    "translation": "すでに3時ですね、休憩をとりましょう。",
+    "jp_target": "休憩をとりましょう",
+    "word_count": 3
+  },
+  "1195": {
+    "id": 1195,
+    "idiom": "take a look at ～",
+    "meaning": "④ ～を見る",
+    "sentence": "The coffee machine doesn’t work. Could you take a look at it?",
+    "eng_target": "take a look at",
+    "choices": [
+      "take a look at",
+      "take a look to",
+      "take a look in"
+    ],
+    "translation": "コーヒーマシンが動かないよ。見てもらえますか？",
+    "jp_target": "見てもらえますか",
+    "word_count": 4
+  },
+  "1196": {
+    "id": 1196,
+    "idiom": "take off",
+    "meaning": "② 離陸する",
+    "sentence": "Our plane took off on time.",
+    "eng_target": "took off",
+    "choices": [
+      "took off",
+      "took up",
+      "took out"
+    ],
+    "translation": "私たちの乗った飛行機は時間通りに離陸した。",
+    "jp_target": "離陸した",
+    "word_count": 2
+  },
+  "1197": {
+    "id": 1197,
+    "idiom": "the number of ～",
+    "meaning": "③ ～の数",
+    "sentence": "The number of the students of my school is almost 300.",
+    "eng_target": "of",
+    "choices": [
+      "of",
+      "to",
+      "for"
+    ],
+    "translation": "私の学校の生徒の数はだいたい300人です。",
+    "jp_target": "数",
+    "word_count": 3,
+    "fc_highlight": "The number of the"
+  },
+  "1198": {
+    "id": 1198,
+    "idiom": "throw away ～",
+    "meaning": "② ～を捨てる",
+    "sentence": "Don’t throw away bottles. You can recycle them.",
+    "eng_target": "throw away",
+    "choices": [
+      "throw away",
+      "throw down",
+      "throw off"
+    ],
+    "translation": "ビンを捨てないで。リサイクルできます。",
+    "jp_target": "捨てないで",
+    "word_count": 2
+  },
+  "1199": {
+    "id": 1199,
+    "idiom": "turn up ～",
+    "meaning": "② ～の音量を上げる",
+    "sentence": "Can you turn up the TV?",
+    "eng_target": "turn up",
+    "choices": [
+      "turn up",
+      "turn down",
+      "turn on"
+    ],
+    "translation": "テレビの音量を上げてくれる？",
+    "jp_target": "上げてくれる",
+    "word_count": 2
+  },
+  "1200": {
+    "id": 1200,
+    "idiom": "where to  (原)",
+    "meaning": "② どこで[どこへ](原)するべきか",
+    "sentence": "We haven’t decided where to meet yet, right?",
+    "eng_target": "where to meet",
+    "choices": [
+      "where to meet",
+      "where to meet to",
+      "where to meeting"
+    ],
+    "translation": "どこで会うべきか、私たちはまだ決めてなかったよね？",
+    "jp_target": "どこで会うべきか",
+    "word_count": 2
+  }
+};
+
+    // データソース情報
+    const dataSourceType = "excel_loaded";
+
+    // アプリの状態
+    let currentQuestions = [];
+    let currentIndex = 0;
+    let correctCount = 0;
+    let soundEnabled = true;
+    let isReviewMode = false;
+    let answeredInThisTurn = false;
+    let isJECorrectSpeaking = false; // 正解後読み上げ中の保護フラグ
+
+    // フラッシュカード専用の状態管理
+    let activeMode = 'quiz'; // 'quiz', 'card-ej', 'card-je'
+    let cardDeck = [];       // 現在学習中のカード一覧
+    let isFlipped = false;   // 現在カードが裏返っているか
+
+    // 起動時の初期化
+    window.onload = function() {
+        // 音声設定の復元
+        const savedSound = safeStorage.getItem('eiken3_sound');
+        if (savedSound !== null) {
+            soundEnabled = savedSound === 'true';
+            updateSoundUI();
+        }
+        
+        // データソース表示のアップデート
+        const sourceIndicator = document.getElementById('source-indicator');
+        if (dataSourceType === "excel_loaded") {
+            sourceIndicator.innerText = "🔌 Excelファイル連動";
+            sourceIndicator.style.background = "#D4EFDF";
+            sourceIndicator.style.color = "#196F3D";
+        } else {
+            sourceIndicator.innerText = "💾 内蔵データベース";
+            sourceIndicator.style.background = "#EADCF8";
+            sourceIndicator.style.color = "#6C3483";
+        }
+
+        showTopScreen();
+    };
+
+    // 音声トグル
+    function toggleSound() {
+        soundEnabled = !soundEnabled;
+        safeStorage.setItem('eiken3_sound', soundEnabled);
+        updateSoundUI();
+        if (soundEnabled) {
+            playCorrectSound();
+        }
+    }
+
+    function updateSoundUI() {
+        document.getElementById('sound-icon').innerText = soundEnabled ? '🔊' : '🔇';
+        document.getElementById('sound-status').innerText = soundEnabled ? '効果音: オン' : '効果音: オフ';
+    }
+
+    // 安全に進行状況を読み込み
+    function loadProgress() {
+        const data = safeStorage.getItem('eiken3_quiz_progress_v2');
+        if (data) {
+            try {
+                return JSON.parse(data);
+            } catch (e) {
+                console.error("Progress read failed, reset.", e);
+            }
+        }
+        return { history: {} };
+    }
+
+    function saveProgress(progress) {
+        safeStorage.setItem('eiken3_quiz_progress_v2', JSON.stringify(progress));
+    }
+
+    // 過去3日間の間違い数を計算
+    function getReviewIds() {
+        const progress = loadProgress();
+        const now = Date.now();
+        const threeDaysMs = 3 * 24 * 60 * 60 * 1000;
+        const reviewIds = [];
+        
+        for (const idStr in progress.history) {
+            const id = parseInt(idStr);
+            const record = progress.history[idStr];
+            if (record.status === 'wrong' && (now - record.timestamp) <= threeDaysMs) {
+                reviewIds.push(id);
+            }
+        }
+        return reviewIds;
+    }
+
+    // TOP画面更新
+    function showTopScreen() {
+        const progress = loadProgress();
+        const history = progress.history;
+        
+        let correctNum = 0;
+        for (const id in history) {
+            if (history[id].status === 'correct') {
+                correctNum++;
+            }
+        }
+        
+        const totalQuizCount = Object.keys(quizDatabase).length || 300;
+        const clearRate = ((correctNum / totalQuizCount) * 100).toFixed(1);
+        document.getElementById('clear-percentage').innerText = clearRate + '%';
+        document.getElementById('progress-bar').style.width = clearRate + '%';
+        document.getElementById('stat-correct-count').innerText = correctNum;
+        
+        const reviewIds = getReviewIds();
+        document.getElementById('stat-review-count').innerText = reviewIds.length;
+        
+        const rBtn = document.getElementById('btn-review');
+        if (reviewIds.length > 0) {
+            rBtn.disabled = false;
+            rBtn.innerHTML = `🔄 過去3日間の間違いを復習する (${reviewIds.length}問)`;
+        } else {
+            rBtn.disabled = true;
+            rBtn.innerHTML = `🔄 過去3日間の間違いを復習する (現在0問)`;
+        }
+        
+        switchScreen('screen-top');
+    }
+
+    function switchScreen(screenId) {
+        document.querySelectorAll('.screen').forEach(scr => scr.classList.remove('active'));
+        document.getElementById(screenId).classList.add('active');
+        window.scrollTo(0, 0);
+    }
+
+    function selectRange(type, element) {
+        document.querySelectorAll('.range-card').forEach(card => card.classList.remove('selected'));
+        element.classList.add('selected');
+        
+        if (type === 'custom') {
+            document.getElementById('radio-custom').checked = true;
+        } else {
+            const radio = element.querySelector('input[type=\"radio\"]');
+            if (radio) radio.checked = true;
+        }
+    }
+
+    function updateCustomRange() {
+        const startInput = document.getElementById('custom-start');
+        const endInput = document.getElementById('custom-end');
+        let start = parseInt(startInput.value) || 901;
+        let end = parseInt(endInput.value) || 1200;
+        
+        if (start < 901) start = 901;
+        if (start > 1200) start = 1200;
+        if (end < start) end = start;
+        if (end > 1200) end = 1200;
+        
+        startInput.value = start;
+        endInput.value = end;
+        
+        selectRange('custom', document.querySelector('.custom-range-container'));
+    }
+
+    // モーダル制御
+    function openReviewModal() {
+        document.getElementById('review-modal').style.display = 'flex';
+    }
+
+    function closeReviewModal() {
+        document.getElementById('review-modal').style.display = 'none';
+    }
+
+    // 学習モード開始の振り分け
+    function startStudy(mode, reviewMode = false) {
+        activeMode = mode;
+        if (mode === 'quiz') {
+            startQuiz(reviewMode);
+        } else {
+            startFlashcards(mode, reviewMode);
+        }
+    }
+
+    // クイズ開始処理
+    function startQuiz(reviewMode = false) {
+        isReviewMode = reviewMode;
+        currentQuestions = [];
+        currentIndex = 0;
+        correctCount = 0;
+        
+        if (isReviewMode) {
+            const reviewIds = getReviewIds();
+            if (reviewIds.length === 0) {
+                alert("過去3日間に間違えた問題はありません！");
+                return;
+            }
+            reviewIds.forEach(id => {
+                if (quizDatabase[id]) {
+                    currentQuestions.push({ id: id, ...quizDatabase[id] });
+                }
+            });
+        } else {
+            const rangeType = document.querySelector('input[name=\"range\"]:checked').value;
+            let start = 901;
+            let end = 1200;
+            
+            if (rangeType === 'level-a') { start = 901; end = 1100; }
+            else if (rangeType === 'level-b') { start = 1101; end = 1200; }
+            else if (rangeType === '901-950') { start = 901; end = 950; }
+            else if (rangeType === '951-1000') { start = 951; end = 1000; }
+            else if (rangeType === '1001-1050') { start = 1001; end = 1050; }
+            else if (rangeType === '1051-1100') { start = 1051; end = 1100; }
+            else if (rangeType === '1101-1150') { start = 1101; end = 1150; }
+            else if (rangeType === '1151-1200') { start = 1151; end = 1200; }
+            else if (rangeType === 'custom') {
+                start = parseInt(document.getElementById('custom-start').value) || 901;
+                end = parseInt(document.getElementById('custom-end').value) || 1200;
+            }
+            
+            for (let id = start; id <= end; id++) {
+                if (quizDatabase[id]) {
+                    currentQuestions.push({ id: id, ...quizDatabase[id] });
+                }
+            }
+        }
+        
+        if (currentQuestions.length === 0) {
+            alert("該当する問題が見つかりませんでした。");
+            return;
+        }
+
+        // 完全シャッフル（ランダム出題）
+        shuffleArray(currentQuestions);
+        
+        loadQuestion();
+        switchScreen('screen-quiz');
+    }
+
+    function shuffleArray(array) {
+        for (let i = array.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [array[i], array[j]] = [array[j], array[i]];
+        }
+    }
+
+    function confirmQuit() {
+        if (confirm("学習を中断してTOP画面に戻りますか？\\n（これまでの学習状況はセーブされています）")) {
+            showTopScreen();
+        }
+    }
+
+    function loadQuestion() {
+        answeredInThisTurn = false;
+        document.getElementById('explanation-card').style.display = 'none';
+        
+        const q = currentQuestions[currentIndex];
+        
+        document.getElementById('quiz-progress-text').innerText = `問題 ${currentIndex + 1} / ${currentQuestions.length}` ;
+        const acc = currentIndex === 0 ? 100 : Math.round((correctCount / currentIndex) * 100);
+        document.getElementById('quiz-accuracy').innerText = `正解率 ${acc}%`;
+        
+        const lvl = q.id >= 1101 ? '熟語B' : '熟語A';
+        document.getElementById('q-id').innerText = `No.${q.id} (英検3級 ${lvl})`;
+        
+        // [     ] 穴埋め置換（V9型・完全置換保証システム）
+        const rawEng = q.sentence;
+        const targetText = q.eng_target;
+        const blankSpan = `<span class="blank">[&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;]</span>`;
+        
+        let questionSentence = rawEng;
+        const escapedTarget = escapeRegExp(targetText);
+        const regex = new RegExp(escapedTarget, 'gi');
+        
+        if (regex.test(rawEng)) {
+            questionSentence = rawEng.replace(regex, blankSpan);
+        } else {
+            // 大文字小文字や記号の微細な不一致があった場合の安全な前方・後方置換フォールバック
+            const cleanTarget = targetText.toLowerCase().replace(/[^a-z0-9]/g, '');
+            const words = rawEng.split(' ');
+            let replaced = false;
+            for (let wLen = words.length; wLen >= 1; wLen--) {
+                for (let start = 0; start <= words.length - wLen; start++) {
+                    const subSeq = words.slice(start, start + wLen).join(' ');
+                    if (subSeq.toLowerCase().replace(/[^a-z0-9]/g, '') === cleanTarget) {
+                        words.splice(start, wLen, blankSpan);
+                        questionSentence = words.join(' ');
+                        replaced = true;
+                        break;
+                    }
+                }
+                if (replaced) break;
+            }
+            if (!replaced) {
+                // 最悪のフォールバック：末尾の記号を除去してマッチさせる
+                const partialTarget = targetText.trim().replace(/[.,!?]$/, '');
+                const partialRegex = new RegExp(escapeRegExp(partialTarget), 'gi');
+                if (partialRegex.test(rawEng)) {
+                    questionSentence = rawEng.replace(partialRegex, blankSpan);
+                } else {
+                    // 最終手段
+                    questionSentence = rawEng + " " + blankSpan;
+                }
+            }
+        }
+        document.getElementById('q-eng').innerHTML = questionSentence;
+        
+        // 和訳下線処理
+        const rawJp = q.translation;
+        let jpQuestion = rawJp;
+        if (q.jp_target) {
+            const targetRegex = new RegExp(escapeRegExp(q.jp_target), 'g');
+            jpQuestion = rawJp.replace(targetRegex, `<u>${q.jp_target}</u>`);
+        }
+        document.getElementById('q-jp').innerHTML = jpQuestion;
+        
+        const choices = [...q.choices];
+        const correctVal = choices[0];
+        
+        shuffleArray(choices);
+        
+        for (let i = 0; i < 3; i++) {
+            const btn = document.getElementById(`choice-${i}`);
+            if (btn) {
+                btn.className = 'choice-btn';
+                btn.querySelector('.text').innerText = choices[i] || '';
+                btn.querySelector('.icon').innerText = '';
+                btn.dataset.isCorrect = (choices[i] === correctVal).toString();
+                btn.disabled = false;
+                btn.style.display = choices[i] ? 'flex' : 'none';
+            }
+        }
+    }
+
+    // 記号を安全にエスケープする、絶対にエラーが起きない高速置換関数
+
+    // 表記揺れ（アポストロフィの全半角、複数の空白、記号など）を吸収して空欄 [     ] に置換する関数
+    function replaceWithBlank(sentence, target) {
+        const blankSpan = '<span class="blank">[&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;]</span>';
+        
+        function normalize(str) {
+            return str.replace(/[’'’‘`]/g, "'")
+                      .replace(/[-–—~〜～]/g, "-")
+                      .replace(/\s+/g, " ")
+                      .trim()
+                      .toLowerCase();
+        }
+        
+        const normSentence = normalize(sentence);
+        const normTarget = normalize(target);
+        
+        // 1. 完全一致置換を試みる
+        const targetEscaped = escapeRegExp(target);
+        const regex = new RegExp(targetEscaped, 'gi');
+        if (regex.test(sentence)) {
+            return sentence.replace(regex, blankSpan);
+        }
+        
+        // 2. 単語単位での曖昧スライディング置換を試みる
+        const targetWords = normTarget.split(' ');
+        const sentWords = sentence.split(/\s+/);
+        
+        let bestStart = -1;
+        let bestLen = 0;
+        
+        for (let start = 0; start <= sentWords.length - targetWords.length; start++) {
+            let matches = 0;
+            for (let i = 0; i < targetWords.length; i++) {
+                const sW = normalize(sentWords[start + i].replace(/[.,\/#!$%\^&\*;:{}=\-_`~()]/g,""));
+                const tW = targetWords[i];
+                if (sW === tW || sW.includes(tW) || tW.includes(sW)) {
+                    matches++;
+                }
+            }
+            if (matches > bestLen) {
+                bestLen = matches;
+                bestStart = start;
+            }
+        }
+        
+        if (bestLen >= Math.min(1, targetWords.length) && bestStart !== -1) {
+            const resultWords = [...sentWords];
+            resultWords.splice(bestStart, targetWords.length, blankSpan);
+            return resultWords.join(' ');
+        }
+        
+        // 3. 最後のフォールバック
+        return sentence + " " + blankSpan;
+    }
+
+    function escapeRegExp(str) {
+        let s = str;
+        const chars = ['\\\\', '.', '*', '+', '?', '^', '$', '(', ')', '[', ']', '{', '}', '|'];
+        for (let i = 0; i < chars.length; i++) {
+            const c = chars[i];
+            s = s.split(c).join('\\\\' + c);
+        }
+        return s;
+    }
+
+    function selectChoice(index) {
+        if (answeredInThisTurn) return;
+        answeredInThisTurn = true;
+        
+        const selectedBtn = document.getElementById(`choice-${index}`);
+        const isCorrect = selectedBtn.dataset.isCorrect === 'true';
+        const q = currentQuestions[currentIndex];
+        
+        const progress = loadProgress();
+        progress.history[q.id] = {
+            status: isCorrect ? 'correct' : 'wrong',
+            timestamp: Date.now()
+        };
+        saveProgress(progress);
+        
+        document.querySelectorAll('.choice-btn').forEach(btn => {
+            btn.disabled = true;
+            btn.classList.add('disabled');
+            if (btn.dataset.isCorrect === 'true') {
+                btn.classList.add('correct');
+                btn.querySelector('.icon').innerText = '⭕';
+            }
+        });
+        
+        if (isCorrect) {
+            correctCount++;
+            playCorrectSound();
+            
+            // ★クイズで正解時：ジングルの0.1秒後（100ms）に、フラッシュカードとは別の女性ボイスで例文を読み上げる
+            setTimeout(() => {
+                playSentenceSpeech(q.sentence, 1, false); // isFemale = true, voiceSelectorIndex = 1
+            }, 100);
+            
+            showExplanation(true);
+        } else {
+            selectedBtn.classList.remove('disabled');
+            selectedBtn.classList.add('incorrect');
+            selectedBtn.querySelector('.icon').innerText = '❌';
+            playIncorrectSound();
+            showExplanation(false);
+        }
+    }
+
+    function showExplanation(isCorrect) {
+        const q = currentQuestions[currentIndex];
+        const card = document.getElementById('explanation-card');
+        const stamp = document.getElementById('feedback-stamp');
+        
+        card.className = 'explanation-card ' + (isCorrect ? 'correct-border' : 'incorrect-border');
+        
+        if (isCorrect) {
+            stamp.className = 'result-stamp correct-text';
+            stamp.innerHTML = '<span>⭕ 正解！ (Excellent)</span>';
+        } else {
+            stamp.className = 'result-stamp incorrect-text';
+            stamp.innerHTML = '<span>❌ 不正解！ (Check This)</span>';
+        }
+        
+        const hlTarget = q.fc_highlight || q.eng_target;
+        const highlightedEng = q.sentence.replace(new RegExp(escapeRegExp(hlTarget), 'gi'), `<strong style="color: var(--accent);">${hlTarget}</strong>`);
+        document.getElementById('exp-sentence').innerHTML = highlightedEng;
+        document.getElementById('exp-idiom').innerText = q.idiom;
+        document.getElementById('exp-meaning').innerText = q.meaning;
+        
+        card.style.display = 'block';
+        card.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+    }
+
+    function nextQuestion() {
+        currentIndex++;
+        if (currentIndex < currentQuestions.length) {
+            loadQuestion();
+        } else {
+            showResultScreen();
+        }
+    }
+
+    function showResultScreen() {
+        const total = currentQuestions.length;
+        const percentage = total === 0 ? 0 : (correctCount / total) * 100;
+        
+        document.getElementById('r-total').innerText = total;
+        document.getElementById('r-correct').innerText = correctCount;
+        document.getElementById('r-percentage').innerHTML = `正解率: <span>${percentage.toFixed(1)}%</span>`;
+        
+        let rank = 'B';
+        let comment = '';
+        
+        if (percentage >= 98) {
+            rank = 'SSS';
+            comment = '超人的な実力です！英検3級の熟語レベルAは完全に極まりました！このまま自信を持って本番に臨んでください。';
+        } else if (percentage >= 90) {
+            rank = 'SS';
+            comment = '素晴らしい！極めて高い正解率です。細かいスペルミスや前置詞の違いもほぼマスターできています！';
+        } else if (percentage >= 80) {
+            rank = 'S';
+            comment = '合格ラインを大きく超えています！この調子で、間違えた問題（過去3日間の間違いボタン）を復習しておきましょう。';
+        } else if (percentage >= 60) {
+            rank = 'A';
+            comment = 'まずまずの実力です。あと少し合格ラインに届うよう、間違えた問題を中心に繰り返し学習してみましょう。';
+        } else {
+            rank = 'B';
+            comment = 'まだまだ伸びしろがあります！まずは短い範囲指定（50問ずつ）で繰り返し練習してみましょう！';
+        }
+        
+        document.getElementById('r-rank').innerText = rank;
+        document.getElementById('r-comment').innerText = comment;
+        
+        switchScreen('screen-result');
+    }
+
+    // ────────────────────────────────────────
+    // 🎴 フラッシュカード学習機能
+    // ────────────────────────────────────────
+    function startFlashcards(mode, reviewMode = false) {
+        cardDeck = [];
+        currentIndex = 0;
+        isFlipped = false;
+        
+        // カードの出題プールを作成
+        if (reviewMode) {
+            const reviewIds = getReviewIds();
+            if (reviewIds.length === 0) {
+                alert("過去3日間に間違えた問題はありません！");
+                return;
+            }
+            reviewIds.forEach(id => {
+                if (quizDatabase[id]) {
+                    cardDeck.push({ id: id, ...quizDatabase[id] });
+                }
+            });
+        } else {
+            const rangeType = document.querySelector('input[name=\"range\"]:checked').value;
+            let start = 901;
+            let end = 1200;
+            
+            if (rangeType === 'level-a') { start = 901; end = 1100; }
+            else if (rangeType === 'level-b') { start = 1101; end = 1200; }
+            else if (rangeType === '901-950') { start = 901; end = 950; }
+            else if (rangeType === '951-1000') { start = 951; end = 1000; }
+            else if (rangeType === '1001-1050') { start = 1001; end = 1050; }
+            else if (rangeType === '1051-1100') { start = 1051; end = 1100; }
+            else if (rangeType === '1101-1150') { start = 1101; end = 1150; }
+            else if (rangeType === '1151-1200') { start = 1151; end = 1200; }
+            else if (rangeType === 'custom') {
+                start = parseInt(document.getElementById('custom-start').value) || 901;
+                end = parseInt(document.getElementById('custom-end').value) || 1200;
+            }
+            
+            for (let id = start; id <= end; id++) {
+                if (quizDatabase[id]) {
+                    cardDeck.push({ id: id, ...quizDatabase[id] });
+                }
+            }
+        }
+        
+        if (cardDeck.length === 0) {
+            alert("該当する問題が見つかりませんでした。");
+            return;
+        }
+
+        // デッキをランダムシャッフル
+        shuffleArray(cardDeck);
+        
+        loadCard();
+        switchScreen('screen-card');
+    }
+
+    function loadCard() {
+        isFlipped = false;
+        document.getElementById('flashcard').classList.remove('flipped');
+        document.getElementById('fc-actions').style.display = 'none';
+        
+        // ★既存の読み上げタイマーと再生を安全にクリア
+        if (window.fcSpeechTimeout) {
+            clearTimeout(window.fcSpeechTimeout);
+        }
+        if (!isJECorrectSpeaking) {
+            try {
+                window.speechSynthesis.cancel();
+            } catch(e){}
+        }
+        
+        const q = cardDeck[currentIndex];
+        
+        // 進捗テキスト
+        document.getElementById('card-progress-text').innerText = `カード ${currentIndex + 1} / ${cardDeck.length}` ;
+        document.getElementById('card-remaining-text').innerText = `未クリア残り ${cardDeck.length - currentIndex}枚`;
+        
+        // おもて面の設定
+        const lvl = q.id >= 1101 ? '熟語B' : '熟語A';
+        document.getElementById('fc-front-num').innerText = `No.${q.id} (英検3級 ${lvl}・おもて)`;
+        
+        if (activeMode === 'card-ej') {
+            // 英 ➡ 日：おもては英語
+            document.getElementById('fc-front-main').innerText = q.idiom;
+            const hlTarget = q.fc_highlight || q.eng_target;
+        const highlightedEng = q.sentence.replace(new RegExp(escapeRegExp(hlTarget), 'gi'), `<strong style="color: var(--accent);">${hlTarget}</strong>`);
+            document.getElementById('fc-front-sub').innerHTML = highlightedEng;
+            document.getElementById('fc-front-hint').style.display = 'none';
+            
+            // ★カードを開いてから0.4秒後に英語例文を自然な男性の声で読み上げるタイマーを設定
+            window.fcSpeechTimeout = setTimeout(() => {
+                if (activeMode === 'card-ej' && !isFlipped) {
+                    playSentenceSpeech(q.sentence, 2, false); // false = 男性を優先
+                }
+            }, 400);
+        } else {
+            // 日 ➡ 英：おもては日本語訳 ＆ 末尾に「（〇語）」を付加
+            document.getElementById('fc-front-main').innerText = q.meaning.replace(/^[①②③④⑤ ]+/, '').trim() + '（' + q.word_count + '語）';
+            // おもて面は日本語訳と単語数のみ。例文日本語訳は非表示にする
+            document.getElementById('fc-front-sub').innerHTML = '';
+            
+            // スペルヒントは不要なため非表示に設定
+            document.getElementById('fc-front-hint').style.display = 'none';
+        }
+        
+        // うら面の設定
+        const lvl_b = q.id >= 1101 ? '熟語B' : '熟語A';
+        document.getElementById('fc-back-num').innerText = `No.${q.id} (英検3級 ${lvl_b}・うら)`;
+        if (activeMode === 'card-ej') {
+            // 英 ➡ 日：うらは日本語意味と対訳
+            document.getElementById('fc-back-main').innerText = q.meaning.replace(/^[①②③④⑤ ]+/, '');
+            document.getElementById('fc-back-sub').innerText = q.translation;
+        } else {
+            // 日 ➡ 英：うらは英熟語、英語例文、さらに例文の日本語訳を併記
+            document.getElementById('fc-back-main').innerText = q.idiom;
+            const hlTarget = q.fc_highlight || q.eng_target;
+            const highlightedEng = q.sentence.replace(new RegExp(escapeRegExp(hlTarget), 'gi'), `<strong style="color: var(--success);">${hlTarget}</strong>`);
+            // 英語例文の下に、例文の日本語訳を美しいレイアウトで配置する
+            const translationBlock = `<div style="font-size:14px; color:var(--text-light); margin-top:10px; border-top:1px dashed var(--border); padding-top:8px; line-height:1.4;">${q.translation}</div>`;
+            document.getElementById('fc-back-sub').innerHTML = highlightedEng + translationBlock;
+        }
+    }
+
+    // 頭文字ヒントの生成アルゴリズム
+    // 例: "want to" -> "w___ t_"
+    function generateSpellHint(str) {
+        return str.split(' ').map(word => {
+            const clean = word.replace(/[^a-zA-Z0-9]/g, '');
+            if (clean.length <= 1) return word;
+            return clean[0] + '_'.repeat(clean.length - 1) + word.substring(clean.length);
+        }).join(' ');
+    }
+
+    function flipCard() {
+        isFlipped = !isFlipped;
+        const card = document.getElementById('flashcard');
+        card.classList.toggle('flipped', isFlipped);
+        playFlipSound();
+        
+        // ★音声タイマーが残っていればキャンセルして、現在再生中の音声を停止
+        if (window.fcSpeechTimeout) {
+            clearTimeout(window.fcSpeechTimeout);
+        }
+        try {
+            window.speechSynthesis.cancel();
+        } catch(e){}
+        
+        // カードがめくられたら、覚えたかどうかの仕分けボタンを出現させる
+        document.getElementById('fc-actions').style.display = isFlipped ? 'flex' : 'none';
+        
+        // ★新機能：日→英フラッシュカードで裏面（英語）になった0.3秒後に、英熟語を女性の声（アメリカ英語）で読み上げ、完了後すぐに男声（イギリス英語）で例文を読み上げる
+                if (activeMode === 'card-je' && isFlipped) {
+            const q = cardDeck[currentIndex];
+            window.fcSpeechTimeout = setTimeout(() => {
+                if (activeMode === 'card-je' && isFlipped) {
+                    playSentenceSpeech(q.sentence, 3, false); // roleIndex = 0 (アメリカ女性1), 例文のみを流暢にすぐ音読
+                }
+            }, 100);
+        }
+    }
+
+    function handleCardScore(isCorrect) {
+        const q = cardDeck[currentIndex];
+        
+        // 進捗ログの更新
+        const progress = loadProgress();
+        progress.history[q.id] = {
+            status: isCorrect ? 'correct' : 'wrong',
+            timestamp: Date.now()
+        };
+        saveProgress(progress);
+        
+        if (isCorrect) {
+            playCorrectSound();
+            // ★正解時：ジングルの0.1秒後（100ms）に、別の女性ボイスで英語例文を読み上げる
+            if (activeMode === 'card-je') {
+                isJECorrectSpeaking = true;
+                setTimeout(() => {
+                    playSentenceSpeech(q.sentence, 1, false); // 別の女性ネイティブボイス
+                    setTimeout(() => { isJECorrectSpeaking = false; }, 3500); // 3.5秒後に保護解除
+                }, 100);
+            }
+            // 覚えた場合はデッキから除外して次へ
+            cardDeck.splice(currentIndex, 1);
+            // インデックスはそのまま（詰まるので自動的に次のカードを指す）
+        } else {
+            playIncorrectSound();
+            // 覚えていない場合は、カードを「デッキの最後尾」に回す
+            const currentCard = cardDeck.splice(currentIndex, 1)[0];
+            cardDeck.push(currentCard);
+            // インデックスはそのまま（詰まるので自動的に次のカードへ）
+        }
+        
+        // すべてのカードを「覚えた！」で仕分け終わったか確認
+        if (cardDeck.length === 0) {
+            alert("素晴らしい！設定範囲のカードをすべて覚えました！");
+            showTopScreen();
+        } else {
+            // 範囲の末尾に到達していたら最初（0）に戻る
+            if (currentIndex >= cardDeck.length) {
+                currentIndex = 0;
+            }
+            loadCard();
+        }
+    }
+
+    // ────────────────────────────────────────
+    // 効果音シンセサイザー (Web Audio API)
+    // ────────────────────────────────────────
+    function playCorrectSound() {
+        if (!soundEnabled) return;
+        try {
+            const ctx = new (window.AudioContext || window.webkitAudioContext)();
+            const now = ctx.currentTime;
+            const osc1 = ctx.createOscillator();
+            const osc2 = ctx.createOscillator();
+            const gain = ctx.createGain();
+            
+            osc1.type = 'sine';
+            osc2.type = 'sine';
+            
+            osc1.frequency.setValueAtTime(523.25, now);
+            osc1.frequency.setValueAtTime(659.25, now + 0.08);
+            osc1.frequency.setValueAtTime(783.99, now + 0.16);
+            osc1.frequency.setValueAtTime(1046.50, now + 0.24);
+            
+            osc2.frequency.setValueAtTime(261.63, now);
+            osc2.frequency.setValueAtTime(329.63, now + 0.08);
+            osc2.frequency.setValueAtTime(392.00, now + 0.16);
+            osc2.frequency.setValueAtTime(523.25, now + 0.24);
+            
+            gain.gain.setValueAtTime(0.7, now);
+            gain.gain.exponentialRampToValueAtTime(0.001, now + 0.5);
+            
+            osc1.connect(gain);
+            osc2.connect(gain);
+            gain.connect(ctx.destination);
+            
+            osc1.start(now);
+            osc2.start(now);
+            osc1.stop(now + 0.55);
+            osc2.stop(now + 0.55);
+        } catch (e) {
+            console.error(e);
+        }
+    }
+
+    function playIncorrectSound() {
+        if (!soundEnabled) return;
+        try {
+            const ctx = new (window.AudioContext || window.webkitAudioContext)();
+            const now = ctx.currentTime;
+            const osc = ctx.createOscillator();
+            const gain = ctx.createGain();
+            
+            osc.type = 'triangle';
+            
+            osc.frequency.setValueAtTime(140, now);
+            gain.gain.setValueAtTime(0.40, now);
+            gain.gain.setValueAtTime(0.001, now + 0.12);
+            
+            osc.frequency.setValueAtTime(140, now + 0.18);
+            gain.gain.setValueAtTime(0.40, now + 0.18);
+            gain.gain.exponentialRampToValueAtTime(0.001, now + 0.3);
+            
+            osc.connect(gain);
+            gain.connect(ctx.destination);
+            
+            osc.start(now);
+            osc.stop(now + 0.35);
+        } catch (e) {
+            console.error(e);
+        }
+    }
+
+    // カードめくりの専用サウンド
+        // ★追加：英語例文の音声読み上げ (男性/女性ネイティブ優先・日本語カタコト変換)
+        // ★追加：英語例文の音声読み上げ (男性・女性の自然な英語ボイス優先)
+        function playSentenceSpeech(text, roleIndex = 0, isKatakoto = false, callback = null) {
+        if (!soundEnabled) {
+            if (callback) callback();
+            return;
+        }
+        
+        try {
+            window.speechSynthesis.cancel();
+            
+            let cleanText = text.replace(/<[^>]*>/g, '').replace(/\s+/g, ' ').trim();
+            cleanText = cleanText.replace(/[*]/g, ' '); // アスタリスクを消去
+            
+            if (isKatakoto) {
+                // (原) ➡ do, (形) ➡ ke yo shi
+                cleanText = cleanText.replace(/\(原\)/g, ' do ')
+                                     .replace(/\(形\)/g, ' ke yo shi ')
+                                     .replace(/\(人\)/g, ' hito ')
+                                     .replace(/\(乗り物\)/g, ' norimono ')
+                                     .replace(/\[単数\]/g, ' tansu ')
+                                     .replace(/\[複数\]/g, ' fukusu ')
+                                     .replace(/\[比較級\]/g, ' hikakkyu ')
+                                     .replace(/\[最上級\]/g, ' saijokyu ')
+                                     .replace(/\bA\b/g, ' ei ')
+                                     .replace(/\bB\b/g, ' bee ');
+                                     
+                // ～ing の1秒静止＋ai enu gee置換
+                const hasIngPattern = /[～~〜\s]+ing/i;
+                if (hasIngPattern.test(cleanText)) {
+                    const parts = cleanText.split(hasIngPattern);
+                    const firstPart = parts[0].trim();
+                    cleanText = firstPart + " , , , a i n g";
+                } else if (cleanText.toLowerCase().endsWith("ing")) {
+                    const firstPart = cleanText.substring(0, cleanText.length - 3).trim();
+                    cleanText = firstPart + " , , , a i n g";
+                }
+            }
+            
+            cleanText = cleanText.replace(/[～~〜…･･･]/g, ' ')
+                                 .replace(/[[\]()（）]/g, ' ')
+                                 .trim();
+            
+            let utterance = new SpeechSynthesisUtterance(cleanText);
+            utterance.lang = 'en-US'; // 100% アメリカ英語に言語を固定
+            
+            // 非同期で音声ロード完了を待つロジック
+            function selectAndSpeak(retryCount = 0) {
+                const voices = window.speechSynthesis.getVoices();
+                const usVoices = voices.filter(v => v.lang.toLowerCase().replace('_', '-').startsWith('en-us'));
+                const enVoices = voices.filter(v => v.lang.toLowerCase().startsWith('en'));
+                
+                if (voices.length === 0 && retryCount < 10) {
+                    setTimeout(() => selectAndSpeak(retryCount + 1), 50);
+                    return;
+                }
+                
+                let selectedVoice = null;
+                
+                // 女性と男性の音声リストを厳密に抽出
+                const females = usVoices.filter(v => {
+                    const name = v.name.toLowerCase();
+                    return name.includes('female') || name.includes('samantha') || name.includes('zira') || name.includes('hazel') || name.includes('google') || name.includes('premium') || name.includes('natural');
+                });
+                
+                const males = usVoices.filter(v => {
+                    const name = v.name.toLowerCase();
+                    return name.includes('male') || name.includes('david') || name.includes('alex') || name.includes('daniel') || name.includes('premium') || name.includes('natural') || name.includes('mark');
+                });
+                
+                if (roleIndex === 0) {
+                    // アメリカ女性1 (日➡英の裏面、15%遅め)
+                    utterance.rate = 0.68; // 15%遅め
+                    selectedVoice = females.find(v => v.name.toLowerCase().includes('samantha') || v.name.toLowerCase().includes('hazel')) || females[0] || usVoices[0];
+                } else if (roleIndex === 1) {
+                    // アメリカ女性2 (クイズ正解後、別女性ボイス, 10%遅め)
+                    utterance.rate = 0.80; // 通常より少し抑えめ
+                    let usFemale2 = females.find(v => {
+                        const name = v.name.toLowerCase();
+                        return name.includes('zira') || name.includes('google') || name.includes('female');
+                    });
+                    selectedVoice = usFemale2 || females[0] || usVoices[0];
+                } else if (roleIndex === 2) {
+                    // アメリカ若い男性 (フラッシュカード音声15%遅く)
+                    utterance.rate = 0.73; // 15%遅く(通常0.88)
+                    selectedVoice = males.find(v => v.name.toLowerCase().includes('alex') || v.name.toLowerCase().includes('daniel')) || males[0] || usVoices[0];
+                } else if (roleIndex === 3) {
+                    // アメリカ中年〜高年男性 (フラッシュカード音声15%遅く)
+                    utterance.rate = 0.68; // 15%遅く(通常0.83)
+                    selectedVoice = males.find(v => v.name.toLowerCase().includes('david') || v.name.toLowerCase().includes('mark') || v.name.toLowerCase().includes('premium')) || males[1] || males[0] || usVoices[0];
+                }
+                
+                // 日本語話者ボイスの絶対禁止ガード
+                if (selectedVoice) {
+                    const vLang = selectedVoice.lang.toLowerCase();
+                    if (vLang.startsWith('ja') || selectedVoice.name.toLowerCase().includes('haruka') || selectedVoice.name.toLowerCase().includes('kyoko') || selectedVoice.name.toLowerCase().includes('sayaka') || selectedVoice.name.toLowerCase().includes('oto')) {
+                        selectedVoice = usVoices.find(v => !v.lang.toLowerCase().startsWith('ja')) || null;
+                    }
+                }
+                
+                if (selectedVoice) {
+                    utterance.voice = selectedVoice;
+                }
+                
+                if (callback) {
+                    utterance.onend = callback;
+                    utterance.onerror = callback; // エラー時のデッドロック防止
+                }
+                
+                window.speechSynthesis.speak(utterance);
+            }
+            
+            selectAndSpeak();
+            
+        } catch (e) {
+            console.error("Speech Synthesis Error:", e);
+            if (callback) callback();
+        }
+    }
+    
+    function playFlipSound() {
+        if (!soundEnabled) return;
+        try {
+            const ctx = new (window.AudioContext || window.webkitAudioContext)();
+            const now = ctx.currentTime;
+            const osc = ctx.createOscillator();
+            const gain = ctx.createGain();
+            
+            osc.type = 'triangle';
+            osc.frequency.setValueAtTime(300, now);
+            osc.frequency.exponentialRampToValueAtTime(120, now + 0.15);
+            
+            gain.gain.setValueAtTime(0.25, now);
+            gain.gain.exponentialRampToValueAtTime(0.001, now + 0.15);
+            
+            osc.connect(gain);
+            gain.connect(ctx.destination);
+            
+            osc.start(now);
+            osc.stop(now + 0.16);
+        } catch (e) {
+            console.error(e);
+        }
+    }
+
+</script>
+</body>
+</html>
